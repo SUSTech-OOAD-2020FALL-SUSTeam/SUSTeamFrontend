@@ -1,0 +1,308 @@
+<template>
+  <header
+    class="nav-wrapper"
+    :class="mediaSize"
+  >
+    <div class="nav">
+      <div class="logo">
+        <router-link
+          class="logo-image-wrapper"
+          to="/"
+        >
+          <img
+            class="logo-image"
+            src="@/assets/logo.png"
+            alt=""
+          >
+        </router-link>
+      </div>
+      <div
+        class="nav-bar"
+        :class="{'show-menu': showMenu}"
+      >
+        <div class="left-nav">
+          <router-link
+            to="/"
+            class="link"
+          >
+            商城
+          </router-link>
+          <router-link
+            to="/help"
+            class="link"
+          >
+            帮助
+          </router-link>
+        </div>
+        <div class="right-nav">
+          <router-link
+            to="/login"
+            class="button login-button"
+          >
+            <a-icon type="user" />
+            登录
+          </router-link>
+          <a class="button primary">
+            获取客户端
+          </a>
+        </div>
+      </div>
+      <div
+        v-if="mediaSize==='small'"
+        class="menu-button"
+      >
+        <a
+          class="button"
+          :class="{'primary': !showMenu}"
+          @click="showMenu = !showMenu"
+        >
+          <a-icon
+            v-show="showMenu"
+            type="close"
+          />
+          <a-icon
+            v-show="!showMenu"
+            type="menu"
+          />
+        </a>
+      </div>
+    </div>
+  </header>
+</template>
+
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
+  name: 'Navigation',
+  components: {},
+  data () {
+    return {
+      mediaSize: 'large',
+      showMenu: false
+    }
+  },
+  mounted () {
+    this.mediaSize = this.checkMediaSize(window.innerWidth)
+    window.addEventListener('resize', () => {
+      this.mediaSize = this.checkMediaSize(window.innerWidth)
+    })
+  },
+  methods: {
+    checkMediaSize (width: number): string {
+      if (width < 768) {
+        return 'small'
+      } else if (width < 1200) {
+        return 'middle'
+      } else {
+        return 'large'
+      }
+    }
+  }
+})
+</script>
+
+<style scoped lang="scss">
+
+$height: 52px;
+
+.nav-wrapper {
+  height: $height;
+}
+
+.logo {
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.nav {
+  position: fixed;
+  width: 100%;
+  height: $height;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  color: #e7e7e7;
+  background-color: #2a2a2a;
+  font-size: 0.75rem;
+}
+
+.logo-image-wrapper {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-image {
+  width: 3.0em;
+}
+
+.link {
+  color: #ccc;
+  font-weight: 400;
+
+  &.router-link-exact-active, &:hover {
+    color: #fff;
+  }
+}
+
+.button {
+  display: block;
+  text-align: center;
+  color: #e7e7e7;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.button.primary {
+  background: #0078f2;
+
+  &:hover {
+    background: #007dfc;
+  }
+}
+
+.login-button > i {
+  font-size: 1.25em;
+  padding: 0 0.75em;
+}
+
+.large {
+  .logo {
+    width: 5em;
+  }
+
+  .link {
+    padding: 0 1.25em;
+  }
+
+  .button {
+    padding: 0 2em;
+  }
+}
+
+.middle {
+  .logo {
+    width: 4.5em;
+  }
+
+  .link {
+    padding: 0 1em;
+  }
+
+  .button {
+    padding: 0 2em;
+  }
+}
+
+.small {
+  .logo {
+    width: 4.5em;
+  }
+}
+
+.large, .middle {
+
+  .nav-bar {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .left-nav, .right-nav {
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .link, .button {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .link::after {
+    position: absolute;
+    content: " ";
+    display: block;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    transition: all .3s;
+    border-bottom: solid 0 #0078f2;
+  }
+
+  .link.router-link-exact-active::after, .link:hover::after {
+    border-bottom-width: 5px;
+  }
+
+}
+
+.small {
+  .menu-button {
+    z-index: 150;
+    width: 52px;
+    font-size: 2.5em;
+    transition: all .2s;
+    & > .button {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .nav-bar {
+    z-index: 100;
+    position: fixed;
+    width: 90vw;
+    height: 100vh;
+    right: -90vw;
+    padding-top: 52px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: stretch;
+
+    font-size: 0.875rem;
+    overflow: hidden;
+    background-color: #2a2a2a;
+    transition: right .2s;
+
+    &.show-menu {
+      right: 0;
+    }
+  }
+
+  .left-nav, .right-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .left-nav {
+    .link {
+      padding: .5em 2em;
+      line-height: 2em;
+      border-bottom: solid 1px #333333;
+    }
+  }
+
+  .right-nav {
+    box-shadow: 0 0 5px 5px #1c1c1c;
+
+    .button {
+      height: 3.5rem;
+      line-height: 3.5rem;
+    }
+  }
+
+}
+
+</style>
