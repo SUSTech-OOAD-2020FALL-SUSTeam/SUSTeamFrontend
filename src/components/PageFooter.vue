@@ -16,11 +16,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import Component from 'vue-class-component'
 
-export default Vue.extend({
-  name: 'PageFooter',
-  components: {}
-})
+@Component
+export default class PageFooter extends Vue {
+}
+
 </script>
 
 <style scoped lang="scss">
@@ -39,6 +40,7 @@ footer {
 .legal {
   padding: 1.5em 0;
   font-size: 0.75rem;
+
   a {
     margin-right: 1.5em;
     color: white;

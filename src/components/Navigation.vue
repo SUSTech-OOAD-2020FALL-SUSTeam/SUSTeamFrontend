@@ -72,34 +72,26 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import Component from 'vue-class-component'
+import { Store } from '@/store/modules/StoreModule'
 
-export default Vue.extend({
-  name: 'Navigation',
-  components: {},
-  data () {
-    return {
-      mediaSize: 'large',
-      showMenu: false
-    }
-  },
-  mounted () {
-    this.mediaSize = this.checkMediaSize(window.innerWidth)
-    window.addEventListener('resize', () => {
-      this.mediaSize = this.checkMediaSize(window.innerWidth)
-    })
-  },
-  methods: {
-    checkMediaSize (width: number): string {
-      if (width < 768) {
-        return 'small'
-      } else if (width < 1200) {
-        return 'middle'
-      } else {
-        return 'large'
-      }
+@Component
+export default class Navigation extends Vue {
+  showMenu = false
+
+  get mediaSize () {
+    const width = Store.windowWidth
+
+    if (width < 768) {
+      return 'small'
+    } else if (width < 1200) {
+      return 'middle'
+    } else {
+      return 'large'
     }
   }
-})
+}
+
 </script>
 
 <style scoped lang="scss">
@@ -180,7 +172,7 @@ $height: 52px;
   }
 
   .button {
-    padding: 0 2em;
+    padding: 0 2.5em;
   }
 }
 

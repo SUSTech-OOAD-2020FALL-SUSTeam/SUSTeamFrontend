@@ -7,6 +7,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
+import { Store } from '@/store/modules/StoreModule'
 import Navigation from '@/components/Navigation.vue'
 import PageFooter from '@/components/PageFooter.vue'
 
@@ -15,6 +16,14 @@ export default Vue.extend({
   components: {
     Navigation,
     PageFooter
+  },
+  mounted () {
+    window.addEventListener('resize', () => {
+      Store.setWindowWidth(window.innerWidth)
+    })
+    this.$nextTick(() => {
+      Store.setWindowWidth(window.innerWidth)
+    })
   }
 })
 
