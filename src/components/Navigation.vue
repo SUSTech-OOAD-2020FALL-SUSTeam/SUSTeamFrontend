@@ -111,6 +111,7 @@ $height: 52px;
   position: fixed;
   width: 100%;
   height: $height;
+  z-index: 50;
   display: flex;
   justify-content: space-between;
   align-items: stretch;

@@ -31,7 +31,7 @@ export default Vue.extend({
 <style scoped lang="scss">
 
 #app {
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
