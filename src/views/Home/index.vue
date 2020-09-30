@@ -1,11 +1,9 @@
 <template>
-  <main
-    class="home"
-    :class="mediaSize"
-  >
+  <main class="home">
     <PageNavigation />
     <div class="page-container">
       <DiscoveryCarousel :games="carouselGames" />
+      <DiscoveryList :games="listGames" />
     </div>
   </main>
 </template>
@@ -13,14 +11,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { Store } from '@/store/modules/StoreModule'
 import PageNavigation from '@/components/PageNavigation.vue'
-import { DiscoveryCarousel } from '@/views/Home/components'
+import { DiscoveryCarousel, DiscoveryList } from '@/views/Home/components'
 import { Game, parseGame } from '@/typings/Game'
 
-@Component({ components: { PageNavigation, DiscoveryCarousel } })
+@Component({ components: { PageNavigation, DiscoveryCarousel, DiscoveryList } })
 export default class Home extends Vue {
   carouselGames: Array<Game> = []
+  listGames: Array<Game> = []
 
   mounted () {
     Array.from(new Array(6)).forEach(() => {
@@ -34,19 +32,17 @@ export default class Home extends Vue {
         imageFullSize: '/img_full.jpg',
         imageCardSize: '/img_card.jpg'
       }))
+      this.listGames.push(parseGame({
+        id: 1,
+        name: '十三机兵防卫圈',
+        price: 448,
+        publishDate: '2020-01-01T12:34:45.789Z',
+        author: 'admin',
+        description: '穿越时代相遇的十三名少男少女搭乘名为「机兵」的巨大机器人，面对关乎人类存亡的最后一战。',
+        imageFullSize: '/img_full.jpg',
+        imageCardSize: '/img_card.jpg'
+      }))
     })
-  }
-
-  get mediaSize () {
-    const width = Store.windowWidth
-
-    if (width < 768) {
-      return 'small'
-    } else if (width < 1024) {
-      return 'middle'
-    } else {
-      return 'large'
-    }
   }
 }
 </script>
@@ -55,6 +51,10 @@ export default class Home extends Vue {
 main {
   color: #fff;
   background-color: #121212;
+}
+
+.page-container > * {
+  margin-bottom: 3.6em;
 }
 
 @media (min-width: 1024px) {
