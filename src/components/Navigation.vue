@@ -96,6 +96,8 @@ export default class Navigation extends Vue {
 
 <style scoped lang="scss">
 
+@import "@/style/global.scss";
+
 $height: 52px;
 
 .nav-wrapper {
@@ -115,8 +117,8 @@ $height: 52px;
   display: flex;
   justify-content: space-between;
   align-items: stretch;
-  color: #e7e7e7;
-  background-color: #2a2a2a;
+  color: $secondary-text;
+  background-color: $secondary-background;
   font-size: 0.75rem;
 }
 
@@ -132,29 +134,29 @@ $height: 52px;
 }
 
 .link {
-  color: #ccc;
+  color: $secondary-text;
   font-weight: 400;
 
   &.router-link-exact-active, &:hover {
-    color: #fff;
+    color: $primary-text;
   }
 }
 
 .button {
   display: block;
   text-align: center;
-  color: #e7e7e7;
+  color: $secondary-text;
 
   &:hover {
-    color: #fff;
+    color: $primary-text;
   }
 }
 
 .button.primary {
-  background: #0078f2;
+  background: $primary-color;
 
   &:hover {
-    background: #007dfc;
+    background: lighten($primary-color, 5%);
   }
 }
 
@@ -226,7 +228,7 @@ $height: 52px;
     width: 100%;
     height: 100%;
     transition: all .3s;
-    border-bottom: solid 0 #0078f2;
+    border-bottom: solid 0 $primary-color;
   }
 
   .link.router-link-exact-active::after, .link:hover::after {
@@ -265,7 +267,7 @@ $height: 52px;
 
     font-size: 0.875rem;
     overflow: hidden;
-    background-color: #2a2a2a;
+    background-color: $secondary-background;
     transition: right .2s;
 
     &.show-menu {
@@ -283,12 +285,12 @@ $height: 52px;
     .link {
       padding: .5em 2em;
       line-height: 2em;
-      border-bottom: solid 1px #333333;
+      border-bottom: solid 1px lighten($secondary-background, 5%);
     }
   }
 
   .right-nav {
-    box-shadow: 0 0 5px 5px #1c1c1c;
+    box-shadow: 0 0 5px 5px darken($secondary-background, 25%);
 
     .button {
       height: 3.5rem;

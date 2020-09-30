@@ -48,9 +48,11 @@ export default class Home extends Vue {
 </script>
 <style scoped lang="scss">
 
+@import "@/style/global.scss";
+
 main {
-  color: #fff;
-  background-color: #121212;
+  color: $primary-text;
+  background-color: $primary-background;
 }
 
 .page-container > * {

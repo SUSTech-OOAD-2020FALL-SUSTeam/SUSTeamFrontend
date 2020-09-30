@@ -124,6 +124,8 @@ export default class DiscoveryCarousel extends Vue {
 
 <style scoped lang="scss">
 
+@import "@/style/global.scss";
+
 .carousel {
   display: flex;
   flex-direction: column;
@@ -154,11 +156,11 @@ export default class DiscoveryCarousel extends Vue {
   flex-direction: column;
   align-items: stretch;
 
-  background: #2a2a2a;
+  background: $secondary-background;
   transition: all .2s;
 
   &:hover {
-    background: #404040;
+    background: lighten($secondary-background, 15%);
   }
 }
 
@@ -190,7 +192,7 @@ export default class DiscoveryCarousel extends Vue {
   transition: all .2s;
 
   &:hover {
-    background: #6a6a6a;
+    background: lighten($secondary-background, 30%);
   }
 }
 
@@ -200,7 +202,7 @@ export default class DiscoveryCarousel extends Vue {
 }
 
 .pagination-icon.active .dot-icon {
-  background: #fff;
+  background: $primary-text;
 }
 
 .dot-icon {
@@ -208,7 +210,7 @@ export default class DiscoveryCarousel extends Vue {
   width: 6px;
   height: 6px;
   border-radius: 3px;
-  background: #6a6a6a;
+  background: $tertiary-text;
 }
 
 .content-wrapper {
@@ -241,26 +243,26 @@ export default class DiscoveryCarousel extends Vue {
 
 .game-hint {
   font-size: 0.875em;
-  color: rgba(255, 255, 255, 0.50);
+  color: $tertiary-text;
 }
 
 .game-name {
   font-size: 1.6em;
-  color: #fff;
+  color: $primary-text;
   margin: 0.75rem 0;
 }
 
 .game-description {
   flex: 1;
   overflow: hidden;
-  color: rgba(255, 255, 255, 0.50);
+  color: $tertiary-text;
 }
 
 .content-link {
   padding: 1em 0;
 
   a {
-    color: #fff;
+    color: $primary-text;
   }
 }
 

@@ -26,9 +26,11 @@ export default class PageFooter extends Vue {
 
 <style scoped lang="scss">
 
+@import "@/style/global.scss";
+
 footer {
-  color: #e7e7e7;
-  background-color: #202020;
+  color: $secondary-text;
+  background-color: $secondary-background;
   padding: 1em 1.5em;
 }
 
@@ -47,7 +49,7 @@ footer {
     transition: color .2s;
 
     &:hover {
-      color: #0078f2
+      color: $primary-color
     }
   }
 }

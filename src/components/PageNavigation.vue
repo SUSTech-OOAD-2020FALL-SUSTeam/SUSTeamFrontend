@@ -42,6 +42,8 @@ export default class PageNavigation extends Vue {
 
 <style scoped lang="scss">
 
+@import "@/style/global.scss";
+
 .page-nav {
   display: flex;
   justify-content: space-between;
@@ -56,23 +58,23 @@ nav > * {
 }
 
 .link {
-  color: #757575;
+  color: $tertiary-text;
   font-weight: 400;
 
   &.router-link-exact-active, &:hover {
-    color: #fff;
+    color: $primary-text;
   }
 }
 
 .searcher /deep/ input.ant-input {
   color: white;
-  background: #252525;
+  background: darken($secondary-background, 15%);
   border-color: transparent;
   padding-left: 3em;
   height: 2.8em;
 
   &::placeholder {
-    color: #757575;
+    color: $tertiary-text;
   }
 
   &:hover {
@@ -80,7 +82,7 @@ nav > * {
   }
 
   &:focus {
-    background: #383838;
+    background: lighten($secondary-background, 5%);
     box-shadow: none;
   }
 }

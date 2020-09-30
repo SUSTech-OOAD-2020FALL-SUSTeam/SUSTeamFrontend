@@ -41,6 +41,8 @@ export default class GameCard extends Vue {
 
 <style scoped lang="scss">
 
+@import "@/style/global.scss";
+
 .game-card {
   border-radius: 3px;
   overflow: hidden;
@@ -60,7 +62,7 @@ export default class GameCard extends Vue {
 }
 
 .game-author {
-  color: rgba(255, 255, 255, 0.5);
+  color: $tertiary-text;
 }
 
 .game-price {
