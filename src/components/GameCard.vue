@@ -29,12 +29,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Game } from '@/typings/Game'
+import { GameProfile } from '@/typings/GameProfile'
 
 @Component
 export default class GameCard extends Vue {
   @Prop()
-  game!: Game
+  game!: GameProfile
 }
 
 </script>

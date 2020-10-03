@@ -13,16 +13,16 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import PageNavigation from '@/components/PageNavigation.vue'
 import { DiscoveryCarousel, DiscoveryList } from '@/views/Home/components'
-import { Game, parseGame } from '@/typings/Game'
+import { GameProfile, parseGameProfile } from '@/typings/GameProfile'
 
 @Component({ components: { PageNavigation, DiscoveryCarousel, DiscoveryList } })
 export default class Home extends Vue {
-  carouselGames: Array<Game> = []
-  listGames: Array<Game> = []
+  carouselGames: Array<GameProfile> = []
+  listGames: Array<GameProfile> = []
 
   mounted () {
-    Array.from(new Array(6)).forEach(() => {
-      this.carouselGames.push(parseGame({
+    Array.from(new Array(3)).forEach(() => {
+      this.carouselGames.push(parseGameProfile({
         id: 1,
         name: '十三机兵防卫圈',
         price: 448,
@@ -32,7 +32,7 @@ export default class Home extends Vue {
         imageFullSize: '/img_full.jpg',
         imageCardSize: '/img_card.jpg'
       }))
-      this.listGames.push(parseGame({
+      this.listGames.push(parseGameProfile({
         id: 1,
         name: '十三机兵防卫圈',
         price: 448,

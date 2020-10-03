@@ -21,33 +21,24 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Game, parseGame } from '@/typings/Game'
+import { EMPTY_GAME, GameProfile } from '@/typings/GameProfile'
 import GameCard from '@/components/GameCard.vue'
 
 @Component({ components: { GameCard } })
 export default class DiscoveryList extends Vue {
   @Prop()
-  games!: Array<Game>
+  games!: Array<GameProfile>
 
   @Prop({ default: '畅销游戏' })
   title!: string
 
   get fillGames () {
-    const arr: Array<Game> = []
+    const arr: Array<GameProfile> = []
     Array.from(new Array(5)).forEach((v, i) => {
       if (i < this.games.length) {
         arr.push(this.games[i])
       } else {
-        arr.push(parseGame({
-          id: -1,
-          name: 'NULL',
-          price: 0,
-          publishDate: '2020-01-01T01:00:00.000Z',
-          author: 'admin',
-          description: null,
-          imageFullSize: '/img_full.jpg',
-          imageCardSize: '/img_card.jpg'
-        }))
+        arr.push(EMPTY_GAME)
       }
     })
     return arr
