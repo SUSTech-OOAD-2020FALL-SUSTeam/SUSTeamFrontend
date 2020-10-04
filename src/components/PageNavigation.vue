@@ -98,6 +98,12 @@ nav > * {
 @media (min-width: 1024px) {
   .page-nav {
     padding: 0 12.5vw;
+    height: 80px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .page-nav {
     height: 100px;
   }
 }
