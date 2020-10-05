@@ -9,7 +9,7 @@ export interface GameProfile {
   imageCardSize: string;
 }
 
-export function parseGameProfile(object: any): GameProfile {
+export function parseGameProfile (object: any): GameProfile {
   return {
     gameId: object.gameId,
     name: object.name,

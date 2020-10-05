@@ -67,8 +67,8 @@
               >
                 {{ game.name }}
               </router-link>
-              <div class="game-description">
-                {{ game.description }}
+              <div class="game-introduction">
+                {{ game.introduction }}
               </div>
             </div>
             <div class="content-link">
@@ -228,6 +228,7 @@ export default class DiscoveryCarousel extends Vue {
 }
 
 .content-text {
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -243,7 +244,7 @@ export default class DiscoveryCarousel extends Vue {
   margin: 0.75rem 0;
 }
 
-.game-description {
+.game-introduction {
   flex: 1;
   overflow: hidden;
   color: $tertiary-text;
@@ -271,8 +272,14 @@ export default class DiscoveryCarousel extends Vue {
     width: 40%;
     padding: 3em 2em;
   }
+  .content-wrapper {
+    height: 0;
+  }
   .content-item {
     padding-bottom: 0;
+  }
+  .content-text {
+    height: 0;
   }
   .content-link {
     padding: 1em 0 0;

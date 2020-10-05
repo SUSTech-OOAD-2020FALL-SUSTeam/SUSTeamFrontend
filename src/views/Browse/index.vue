@@ -106,7 +106,7 @@ export default class Browse extends Vue {
         price: 448,
         publishDate: '2020-01-01T12:34:45.789Z',
         author: 'admin',
-        description: '穿越时代相遇的十三名少男少女搭乘名为「机兵」的巨大机器人，面对关乎人类存亡的最后一战。',
+        introduction: '穿越时代相遇的十三名少男少女搭乘名为「机兵」的巨大机器人，面对关乎人类存亡的最后一战。',
         imageFullSize: '/img_full.jpg',
         imageCardSize: '/img_card.jpg'
       }))
