@@ -100,7 +100,7 @@ export default class DiscoveryCarousel extends Vue {
 
   get fillGames () {
     const arr: Array<GameProfile> = []
-    Array.from(new Array(5)).forEach((v, i) => {
+    Array.from(new Array(6)).forEach((v, i) => {
       if (i < this.games.length) {
         arr.push(this.games[i])
       } else {
