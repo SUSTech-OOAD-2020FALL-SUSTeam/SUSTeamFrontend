@@ -10,16 +10,16 @@
             <a class="order-link">
               排序方式:
               <span class="highlight">
-                {{ order }}
+                {{ order.text }}
                 <a-icon type="down" />
               </span>
             </a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a @click="order='发行日期'">发行日期</a>
+                <a @click="order=order.constructor.PUBLISH_DATE">发行日期</a>
               </a-menu-item>
               <a-menu-item>
-                <a @click="order='字母顺序'">字母顺序</a>
+                <a @click="order=order.constructor.NAME">字母顺序</a>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
@@ -78,12 +78,17 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import PageNavigation from '@/components/PageNavigation.vue'
-import { GameProfile, parseGameProfile } from '@/typings/GameProfile'
+import { GameProfile } from '@/typings/GameProfile'
 import GameCard from '@/components/GameCard.vue'
+import { games } from '@/api/Game'
+import { Watch } from 'vue-property-decorator'
 
-enum Order {
-  PUBLISH_DATE = '发行日期',
-  NAME = '字母顺序'
+class Order {
+  static readonly PUBLISH_DATE = new Order('publishDate', '发行日期')
+  static readonly NAME = new Order('name', '字母顺序')
+
+  // eslint-disable-next-line no-useless-constructor
+  private constructor (readonly key: string, readonly text: string) {}
 }
 
 @Component({ components: { PageNavigation, GameCard } })
@@ -99,18 +104,12 @@ export default class Browse extends Vue {
   tags: Array<string> = ['动作', '冒险', '解密', '角色扮演', '射击', '战略']
 
   mounted () {
-    Array.from(new Array(10)).forEach(() => {
-      this.games.push(parseGameProfile({
-        gameId: 1,
-        name: '十三机兵防卫圈',
-        price: 448,
-        publishDate: '2020-01-01T12:34:45.789Z',
-        author: 'admin',
-        introduction: '穿越时代相遇的十三名少男少女搭乘名为「机兵」的巨大机器人，面对关乎人类存亡的最后一战。',
-        imageFullSize: '/img_full.jpg',
-        imageCardSize: '/img_card.jpg'
-      }))
-    })
+    games().then(it => { this.games = it })
+  }
+
+  @Watch('order')
+  onOrderChanged (val: Order) {
+    games(val.key).then(it => { this.games = it })
   }
 }
 

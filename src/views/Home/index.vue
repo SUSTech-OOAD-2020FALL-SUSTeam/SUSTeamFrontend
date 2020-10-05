@@ -13,7 +13,8 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import PageNavigation from '@/components/PageNavigation.vue'
 import { DiscoveryCarousel, DiscoveryList } from '@/views/Home/components'
-import { GameProfile, parseGameProfile } from '@/typings/GameProfile'
+import { GameProfile } from '@/typings/GameProfile'
+import { recommendGames } from '@/api/Game'
 
 @Component({ components: { PageNavigation, DiscoveryCarousel, DiscoveryList } })
 export default class Home extends Vue {
@@ -21,28 +22,8 @@ export default class Home extends Vue {
   listGames: Array<GameProfile> = []
 
   mounted () {
-    Array.from(new Array(3)).forEach(() => {
-      this.carouselGames.push(parseGameProfile({
-        gameId: 1,
-        name: '十三机兵防卫圈',
-        price: 448,
-        publishDate: '2020-01-01T12:34:45.789Z',
-        author: 'admin',
-        introduction: '穿越时代相遇的十三名少男少女搭乘名为「机兵」的巨大机器人，面对关乎人类存亡的最后一战。',
-        imageFullSize: '/img_full.jpg',
-        imageCardSize: '/img_card.jpg'
-      }))
-      this.listGames.push(parseGameProfile({
-        gameId: 1,
-        name: '十三机兵防卫圈',
-        price: 448,
-        publishDate: '2020-01-01T12:34:45.789Z',
-        author: 'admin',
-        introduction: '穿越时代相遇的十三名少男少女搭乘名为「机兵」的巨大机器人，面对关乎人类存亡的最后一战。',
-        imageFullSize: '/img_full.jpg',
-        imageCardSize: '/img_card.jpg'
-      }))
-    })
+    recommendGames().then(it => { this.carouselGames = it })
+    recommendGames().then(it => { this.listGames = it })
   }
 }
 </script>
