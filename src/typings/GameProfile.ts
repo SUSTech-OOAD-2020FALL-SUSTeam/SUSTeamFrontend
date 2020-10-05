@@ -1,5 +1,5 @@
 export interface GameProfile {
-  id: number;
+  gameId: number;
   name: string;
   price: number;
   publishDate: Date;
@@ -11,7 +11,7 @@ export interface GameProfile {
 
 export function parseGameProfile(object: any): GameProfile {
   return {
-    id: object.id,
+    gameId: object.gameId,
     name: object.name,
     price: object.price,
     publishDate: new Date(object.publishDate),
@@ -23,7 +23,7 @@ export function parseGameProfile(object: any): GameProfile {
 }
 
 export const EMPTY_GAME = parseGameProfile({
-  id: -1,
+  gameId: -1,
   name: 'NULL',
   price: 0,
   publishDate: '2020-01-01T01:00:00.000Z',

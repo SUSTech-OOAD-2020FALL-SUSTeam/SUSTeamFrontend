@@ -8,7 +8,7 @@
         <router-link
           v-for="(game, index) in fillGames"
           :key="`game-image-${index}`"
-          :to="`/game/${game.id}`"
+          :to="`/game/${game.gameId}`"
           class="carousel-link"
         >
           <img
@@ -62,7 +62,7 @@
                 现已推出
               </div>
               <router-link
-                :to="`/game/${game.id}`"
+                :to="`/game/${game.gameId}`"
                 class="game-name"
               >
                 {{ game.name }}
@@ -73,7 +73,7 @@
             </div>
             <div class="content-link">
               <router-link
-                :to="`/game/${game.id}`"
+                :to="`/game/${game.gameId}`"
               >
                 了解详情
                 <a-icon type="arrow-right" />

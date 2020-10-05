@@ -23,7 +23,7 @@ export default class Home extends Vue {
   mounted () {
     Array.from(new Array(3)).forEach(() => {
       this.carouselGames.push(parseGameProfile({
-        id: 1,
+        gameId: 1,
         name: '十三机兵防卫圈',
         price: 448,
         publishDate: '2020-01-01T12:34:45.789Z',
@@ -33,7 +33,7 @@ export default class Home extends Vue {
         imageCardSize: '/img_card.jpg'
       }))
       this.listGames.push(parseGameProfile({
-        id: 1,
+        gameId: 1,
         name: '十三机兵防卫圈',
         price: 448,
         publishDate: '2020-01-01T12:34:45.789Z',

@@ -1,7 +1,7 @@
 <template>
   <div class="game-card">
     <router-link
-      :to="`/game/${game.id}`"
+      :to="`/game/${game.gameId}`"
       class="wrapper"
     >
       <div class="game-image-wrapper">
