@@ -9,6 +9,7 @@ export interface GameProfile {
   imageCardSize: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseGameProfile (object: any): GameProfile {
   return {
     gameId: object.gameId,
