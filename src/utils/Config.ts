@@ -1,2 +1,2 @@
-export const HOST = 'http://localhost:8080'
-export const API_BASE = '/api'
+export const HOST = process.env.VUE_APP_HOST
+export const API_BASE = process.env.VUE_APP_API_BASE

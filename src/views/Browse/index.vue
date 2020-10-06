@@ -104,7 +104,7 @@ export default class Browse extends Vue {
   tags: Array<string> = []
 
   mounted () {
-    games().then(it => { this.games = it })
+    games(this.order.key).then(it => { this.games = it })
     tags().then(it => { this.tags = it })
   }
 
