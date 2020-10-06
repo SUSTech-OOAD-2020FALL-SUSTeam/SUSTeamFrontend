@@ -80,7 +80,7 @@ import Component from 'vue-class-component'
 import PageNavigation from '@/components/PageNavigation.vue'
 import { GameProfile } from '@/typings/GameProfile'
 import GameCard from '@/components/GameCard.vue'
-import { games } from '@/api/Game'
+import { games, gamesWithTag, tags } from '@/api/Game'
 import { Watch } from 'vue-property-decorator'
 
 class Order {
@@ -101,15 +101,21 @@ export default class Browse extends Vue {
 
   showMenu = false
 
-  tags: Array<string> = ['动作', '冒险', '解密', '角色扮演', '射击', '战略']
+  tags: Array<string> = []
 
   mounted () {
     games().then(it => { this.games = it })
+    tags().then(it => { this.tags = it })
   }
 
   @Watch('order')
   onOrderChanged (val: Order) {
     games(val.key).then(it => { this.games = it })
+  }
+
+  @Watch('filterSelectedKeys')
+  onTagsChanged (val: Array<string>) {
+    gamesWithTag(val).then(it => { this.games = it })
   }
 }
 
