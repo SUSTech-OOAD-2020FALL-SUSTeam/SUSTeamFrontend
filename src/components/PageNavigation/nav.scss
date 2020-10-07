@@ -1,0 +1,35 @@
+@import "@/style/global.scss";
+
+.page-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4em;
+  padding: 0 1em;
+}
+
+nav > * {
+  margin-right: 1.25em;
+}
+
+.link {
+  color: $tertiary-text;
+  font-weight: 400;
+
+  &.router-link-exact-active, &:hover {
+    color: $primary-text;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-nav {
+    padding: 0 12.5vw;
+    height: 80px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .page-nav {
+    height: 100px;
+  }
+}

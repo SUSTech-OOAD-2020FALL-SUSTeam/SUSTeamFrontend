@@ -1,0 +1,10 @@
+main.dark {
+  color: $primary-text;
+  background-color: $primary-background;
+}
+
+@media (min-width: 1024px) {
+  .page-container {
+    padding: 0 12.5vw;
+  }
+}

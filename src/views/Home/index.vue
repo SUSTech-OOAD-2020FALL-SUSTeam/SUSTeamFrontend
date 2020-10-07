@@ -1,5 +1,5 @@
 <template>
-  <main class="home">
+  <main class="home dark">
     <PageNavigation />
     <div class="page-container">
       <DiscoveryCarousel :games="carouselGames" />
@@ -11,7 +11,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import PageNavigation from '@/components/PageNavigation.vue'
+import PageNavigation from '@/components/PageNavigation/index.vue'
 import { DiscoveryCarousel, DiscoveryList } from '@/views/Home/components'
 import { GameProfile } from '@/typings/GameProfile'
 import { recommendGames } from '@/api/Game'
@@ -31,19 +31,10 @@ export default class Home extends Vue {
 
 @import "@/style/global.scss";
 
-main {
-  color: $primary-text;
-  background-color: $primary-background;
-}
+@import "@/style/page.scss";
 
 .page-container > * {
   margin-bottom: 3.6em;
-}
-
-@media (min-width: 1024px) {
-  .page-container {
-    padding: 0 12.5vw;
-  }
 }
 
 </style>

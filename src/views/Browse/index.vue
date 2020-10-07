@@ -1,5 +1,5 @@
 <template>
-  <main class="browse">
+  <main class="browse dark">
     <PageNavigation />
     <div class="page-container">
       <div class="game-list-container">
@@ -77,7 +77,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import PageNavigation from '@/components/PageNavigation.vue'
+import PageNavigation from '@/components/PageNavigation/index.vue'
 import { GameProfile } from '@/typings/GameProfile'
 import GameCard from '@/components/GameCard.vue'
 import { games, gamesWithTag, tags } from '@/api/Game'
@@ -125,10 +125,7 @@ export default class Browse extends Vue {
 
 @import "@/style/global.scss";
 
-main {
-  color: $primary-text;
-  background-color: $primary-background;
-}
+@import "@/style/page.scss";
 
 .page-container {
   display: flex;
@@ -291,10 +288,6 @@ main {
 }
 
 @media (min-width: 1024px) {
-
-  .page-container {
-    padding: 0 12.5vw;
-  }
 
   .game-list-container {
     padding: 0;
