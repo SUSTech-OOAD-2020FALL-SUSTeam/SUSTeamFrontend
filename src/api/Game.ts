@@ -2,6 +2,7 @@
 
 import { GameProfile, parseGameProfile } from '@/typings/GameProfile'
 import request from '@/utils/Request'
+import { GameDetail, parseGameDetail } from '@/typings/GameDetail'
 
 export async function recommendGames (): Promise<Array<GameProfile>> {
   const data: any = await request.get('/games/recommend')
@@ -29,4 +30,9 @@ export async function gamesWithTag (tags: Array<string>): Promise<Array<GameProf
   const data: any = await request.get('/games/tags', { params: params })
   const games: Array<any> = data.games
   return games.map(it => parseGameProfile(it))
+}
+
+export async function gameDetail (gameId: number): Promise<GameDetail> {
+  const data: any = await request.get(`/game/${gameId}/detail`)
+  return parseGameDetail(data.gameDetail)
 }
