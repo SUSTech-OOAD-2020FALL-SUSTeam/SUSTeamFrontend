@@ -1,22 +1,12 @@
 <template>
-  <div id="app">
-    <Navigation />
-    <router-view class="main" />
-    <PageFooter />
-  </div>
+  <router-view class="root" />
 </template>
 <script lang="ts">
 import Vue from 'vue'
 import { Store } from '@/store/modules/StoreModule'
-import Navigation from '@/components/Navigation.vue'
-import PageFooter from '@/components/PageFooter.vue'
 
 export default Vue.extend({
   name: 'App',
-  components: {
-    Navigation,
-    PageFooter
-  },
   mounted () {
     window.addEventListener('resize', () => {
       Store.setWindowWidth(window.innerWidth)
@@ -29,17 +19,5 @@ export default Vue.extend({
 
 </script>
 <style scoped lang="scss">
-
-#app {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-}
-
-.main {
-  flex: 1;
-}
 
 </style>

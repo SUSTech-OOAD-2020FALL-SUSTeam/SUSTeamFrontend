@@ -205,7 +205,7 @@ export default class GamePage extends Vue {
 .game-introduction-container {
   display: flex;
   flex-wrap: wrap;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .game-introduction-cover-image {
