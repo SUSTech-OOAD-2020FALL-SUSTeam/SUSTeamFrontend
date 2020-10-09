@@ -11,7 +11,7 @@ request.interceptors.request.use(
   config => {
     const token = getToken()
     if (token) {
-      config.headers.authorization = token
+      config.headers.authorization = `Bearer ${token}`
     }
     return config
   },
@@ -29,6 +29,9 @@ request.interceptors.response.use(
     }
   },
   error => {
+    if (error?.response?.data?.success === false) {
+      return Promise.reject(error.response.data.error)
+    }
     return Promise.reject(error)
   }
 )

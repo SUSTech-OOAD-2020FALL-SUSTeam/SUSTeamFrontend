@@ -6,8 +6,13 @@ export function getToken (): string | undefined {
   return Cookies.get(TokenKey)
 }
 
-export function setToken (token: string): string | undefined {
-  return Cookies.set(TokenKey, token)
+export function setToken (token: string | undefined): string | undefined {
+  if (token === undefined) {
+    Cookies.remove(TokenKey)
+    return undefined
+  } else {
+    return Cookies.set(TokenKey, token)
+  }
 }
 
 export function removeToken (): void {

@@ -36,7 +36,7 @@
         </div>
         <div class="right-nav">
           <router-link
-            to="/login"
+            :to="`/login?redirect=${$route.path}`"
             class="button login-button"
           >
             <a-icon type="user" />
