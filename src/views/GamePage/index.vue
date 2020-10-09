@@ -48,7 +48,7 @@
         <div class="game-content-title">
           关于游戏
         </div>
-        <div class="game-content-body game-description-body">
+        <div class="game-description-body game-content-body">
           <div class="game-property-box">
             <div class="game-property">
               <div class="game-property-key">
@@ -71,12 +71,40 @@
                 标签
               </div>
               <div class="game-property-value">
-                {{ game.tags.join(", ") }}
+                {{ game.tags.join(', ') }}
               </div>
             </div>
           </div>
           <div class="game-description">
             <vue-markdown :source="game.description" />
+          </div>
+        </div>
+      </div>
+      <div class="game-comment-container game-content">
+        <div class="game-content-title">
+          评论
+        </div>
+        <div class="game-comment-body game-content-body">
+          <div class="game-comment-control">
+            <a
+              class="game-comment-control-link"
+              @click="triggerShowAllComment"
+            >
+              {{ showAllComment ? '关闭评论' : '查看所有评论' }}
+            </a>
+          </div>
+          <div
+            class="game-comment-box"
+            :class="{close: !showAllComment}"
+          >
+            <CommentCard
+              v-for="(comment, index) in filledComment"
+              :key="`comment-${index}`"
+              :comment="comment"
+              class="game-comment"
+              :class="{selected: index === selectedComment}"
+              @select-comment="selectComment(index)"
+            />
           </div>
         </div>
       </div>
@@ -90,13 +118,21 @@ import Component from 'vue-class-component'
 import Searcher from '@/components/PageNavigation/Searcher.vue'
 import { EMPTY_GAME_DETAIL, GameDetail } from '@/typings/GameDetail'
 import { gameDetail } from '@/api/Game'
-import { ImageGallery } from '@/views/GamePage/components'
+import { ImageGallery, CommentCard } from '@/views/GamePage/components'
 import { EMPTY_GAME } from '@/typings/GameProfile'
 import VueMarkdown from 'vue-markdown'
+import { Comment, EMPTY_COMMENT } from '@/typings/Comment'
+import { gameComments } from '@/api/Comment'
 
-@Component({ components: { Searcher, ImageGallery, VueMarkdown } })
+@Component({ components: { Searcher, ImageGallery, CommentCard, VueMarkdown } })
 export default class GamePage extends Vue {
   game: GameDetail = EMPTY_GAME_DETAIL
+
+  comments: Array<Comment> = []
+
+  showAllComment = false
+
+  selectedComment = -1
 
   mounted () {
     const gameId = this.gameId
@@ -111,6 +147,9 @@ export default class GamePage extends Vue {
       .catch(() => {
         this.$message.error('Game not exist!')
       })
+    gameComments(gameId).then(it => {
+      this.comments = it
+    })
   }
 
   get gameId () {
@@ -120,6 +159,24 @@ export default class GamePage extends Vue {
 
   get coverImage () {
     return this.game.images.find(it => it.type === 'F')?.url || EMPTY_GAME.imageFullSize
+  }
+
+  get filledComment () {
+    if (this.comments.length < 3) {
+      return [...this.comments, EMPTY_COMMENT]
+    } else {
+      return this.comments
+    }
+  }
+
+  triggerShowAllComment () {
+    this.showAllComment = !this.showAllComment
+    this.selectedComment = -1
+  }
+
+  selectComment (index: number) {
+    this.showAllComment = true
+    this.selectedComment = index
   }
 }
 
@@ -214,9 +271,7 @@ export default class GamePage extends Vue {
 }
 
 .game-description {
-  & /deep/ p {
-    color: $tertiary-text;
-  }
+  color: $tertiary-text;
 
   & /deep/ h1,
   & /deep/ h2,
@@ -225,6 +280,70 @@ export default class GamePage extends Vue {
   & /deep/ h5,
   & /deep/ h6 {
     color: $secondary-text;
+  }
+}
+
+.game-comment-body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.game-comment-control {
+  align-self: flex-end;
+  padding-bottom: 1.5em;
+
+  .game-comment-control-link {
+    color: $secondary-text;
+  }
+}
+
+.game-comment-box {
+  display: flex;
+  flex-flow: row wrap;
+  overflow: hidden;
+
+  &.close {
+    height: 25em;
+  }
+}
+
+.game-comment {
+  height: 24em;
+  margin-bottom: 1.5em;
+  transition: all .2s;
+
+  &.selected {
+    width: 100%;
+    height: auto;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-comment {
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .game-comment {
+    width: calc((100% - 3 * 1.2em) / 3);
+    margin-right: 1.2em;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .game-comment {
+    width: calc((100% - 2 * 1.2em) / 2);
+    margin-right: 1.2em;
+  }
+}
+
+@media (min-width: 1280px) {
+  .game-comment {
+    width: calc((100% - 3 * 1.2em) / 3);
+    margin-right: 1.2em;
   }
 }
 
