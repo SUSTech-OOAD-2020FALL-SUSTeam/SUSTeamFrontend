@@ -4,6 +4,7 @@
     @click="$emit('select-comment')"
   >
     <a-rate
+      :value="comment.score"
       :default-value="comment.score"
       allow-half
       disabled
