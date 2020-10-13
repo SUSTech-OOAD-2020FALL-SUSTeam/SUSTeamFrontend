@@ -4,6 +4,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Store } from '@/store/modules/StoreModule'
+import { UserStore } from '@/store/modules/UserStoreModule'
 
 export default Vue.extend({
   name: 'App',
@@ -14,6 +15,7 @@ export default Vue.extend({
     this.$nextTick(() => {
       Store.setWindowWidth(window.innerWidth)
     })
+    UserStore.update()
   }
 })
 

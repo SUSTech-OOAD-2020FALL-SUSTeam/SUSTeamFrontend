@@ -11,7 +11,7 @@ export function setToken (token: string | undefined): string | undefined {
     Cookies.remove(TokenKey)
     return undefined
   } else {
-    return Cookies.set(TokenKey, token)
+    return Cookies.set(TokenKey, token, { expires: 7 })
   }
 }
 

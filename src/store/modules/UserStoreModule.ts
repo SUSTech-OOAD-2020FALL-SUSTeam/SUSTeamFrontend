@@ -6,10 +6,10 @@ import { getToken, setToken } from '@/utils/Auth'
 
 @Module({ name: 'user-module', dynamic: true, store })
 export default class UserStoreModule extends VuexModule {
-  public user: UserRole | undefined
+  public user: UserRole | null = null
 
   @Mutation
-  setUser (user: UserRole | undefined) {
+  setUser (user: UserRole | null) {
     this.user = user
   }
 

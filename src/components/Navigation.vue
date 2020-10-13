@@ -36,11 +36,22 @@
         </div>
         <div class="right-nav">
           <router-link
+            v-if="user === null"
             :to="`/login?redirect=${$route.path}`"
             class="button login-button"
           >
             <a-icon type="user" />
             登录
+          </router-link>
+          <router-link
+            v-else
+            :to="`/account/personal`"
+            class="button login-button"
+          >
+            <a-icon type="user" />
+            <span class="username">
+              {{ user.username }}
+            </span>
           </router-link>
           <a class="button primary">
             获取客户端
@@ -74,6 +85,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Store } from '@/store/modules/StoreModule'
+import { UserStore } from '@/store/modules/UserStoreModule'
 
 @Component
 export default class Navigation extends Vue {
@@ -89,6 +101,10 @@ export default class Navigation extends Vue {
     } else {
       return 'large'
     }
+  }
+
+  get user () {
+    return UserStore.user
   }
 }
 
@@ -158,6 +174,12 @@ $height: 52px;
   &:hover {
     background: lighten($primary-color, 5%);
   }
+}
+
+.username {
+  display: inline-block;
+  max-width: 10em;
+  overflow: hidden;
 }
 
 .login-button > i {
