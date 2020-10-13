@@ -43,16 +43,56 @@
             <a-icon type="user" />
             登录
           </router-link>
-          <router-link
-            v-else
-            :to="`/account/personal`"
-            class="button login-button"
-          >
-            <a-icon type="user" />
-            <span class="username">
-              {{ user.username }}
-            </span>
-          </router-link>
+          <template v-else>
+            <a-dropdown
+              v-if="mediaSize !== 'small'"
+              class="button user-info-button"
+            >
+              <a>
+                <a-icon type="user" />
+                <span class="username">
+                  {{ user.username }}
+                </span>
+              </a>
+              <a-menu slot="overlay">
+                <a-menu-item key="0">
+                  <router-link
+                    :to="`/account/personal`"
+                    class="user-link"
+                  >
+                    账户
+                  </router-link>
+                </a-menu-item>
+                <a-menu-item key="1">
+                  <a
+                    class="user-link"
+                    @click="logout"
+                  >登出</a>
+                </a-menu-item>
+              </a-menu>
+            </a-dropdown>
+            <div
+              v-else
+              class="button user-info-line"
+            >
+              <a class="username-box">
+                <a-icon type="user" />
+                <span class="username">
+                  {{ user.username }}
+                </span>
+              </a>
+              <router-link
+                :to="`/account/personal`"
+                class="user-link"
+              >
+                账户
+              </router-link>
+              <a
+                class="user-link"
+                @click="logout"
+              >登出</a>
+            </div>
+          </template>
           <a class="button primary">
             获取客户端
           </a>
@@ -86,6 +126,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Store } from '@/store/modules/StoreModule'
 import { UserStore } from '@/store/modules/UserStoreModule'
+import { clearToken } from '@/utils/Auth'
 
 @Component
 export default class Navigation extends Vue {
@@ -105,6 +146,12 @@ export default class Navigation extends Vue {
 
   get user () {
     return UserStore.user
+  }
+
+  async logout () {
+    clearToken()
+    await UserStore.update()
+    this.$message.success('Logout success!')
   }
 }
 
@@ -185,6 +232,24 @@ $height: 52px;
 .login-button > i {
   font-size: 1.25em;
   padding: 0 0.75em;
+}
+
+.user-info-line {
+  display: flex;
+
+  .username-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  & > * {
+    display: inline-block;
+    box-sizing: border-box;
+    flex: 1;
+    color: $secondary-text;
+    border-right: solid 1px rgba(255,255,255,0.1);
+  }
 }
 
 .large {

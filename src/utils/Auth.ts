@@ -15,6 +15,6 @@ export function setToken (token: string | undefined): string | undefined {
   }
 }
 
-export function removeToken (): void {
+export function clearToken (): void {
   return Cookies.remove(TokenKey)
 }

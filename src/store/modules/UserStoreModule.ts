@@ -17,6 +17,7 @@ export default class UserStoreModule extends VuexModule {
   async update () {
     const storeToken = getToken()
     if (storeToken === undefined) {
+      this.setUser(null)
       return
     }
     try {
