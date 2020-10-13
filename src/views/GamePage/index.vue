@@ -106,6 +106,28 @@
               @select-comment="selectComment(index)"
             />
           </div>
+          <div
+            v-if="user"
+            class="game-post-comment"
+          >
+            <a-rate
+              v-model="commentScore"
+              allow-half
+              class="game-post-comment-score"
+            />
+            <a-textarea
+              v-model="commentInput"
+              placeholder="Input comment"
+              class="game-post-comment-input"
+            />
+            <a-button
+              type="primary"
+              class="game-post-comment-button"
+              @click="postComment"
+            >
+              提交评论
+            </a-button>
+          </div>
         </div>
       </div>
     </div>
@@ -118,11 +140,13 @@ import Component from 'vue-class-component'
 import Searcher from '@/components/PageNavigation/Searcher.vue'
 import { EMPTY_GAME_DETAIL, GameDetail } from '@/typings/GameDetail'
 import { gameDetail } from '@/api/Game'
-import { ImageGallery, CommentCard } from '@/views/GamePage/components'
+import { CommentCard, ImageGallery } from '@/views/GamePage/components'
 import { EMPTY_GAME } from '@/typings/GameProfile'
 import VueMarkdown from 'vue-markdown'
 import { Comment, EMPTY_COMMENT } from '@/typings/Comment'
-import { gameComments } from '@/api/Comment'
+import { createComment, gameComments, updateComment } from '@/api/Comment'
+import { UserStore } from '@/store/modules/UserStoreModule'
+import { Watch } from 'vue-property-decorator'
 
 @Component({ components: { Searcher, ImageGallery, CommentCard, VueMarkdown } })
 export default class GamePage extends Vue {
@@ -133,6 +157,9 @@ export default class GamePage extends Vue {
   showAllComment = false
 
   selectedComment = -1
+
+  commentInput = ''
+  commentScore = 0
 
   mounted () {
     const gameId = this.gameId
@@ -147,9 +174,7 @@ export default class GamePage extends Vue {
       .catch(() => {
         this.$message.error('Game not exist!')
       })
-    gameComments(gameId).then(it => {
-      this.comments = it
-    })
+    this.loadComments()
   }
 
   get gameId () {
@@ -169,6 +194,15 @@ export default class GamePage extends Vue {
     }
   }
 
+  get user () {
+    return UserStore.user
+  }
+
+  @Watch('user')
+  onUserChange () {
+    this.loadUserComment()
+  }
+
   triggerShowAllComment () {
     this.showAllComment = !this.showAllComment
     this.selectedComment = -1
@@ -177,6 +211,48 @@ export default class GamePage extends Vue {
   selectComment (index: number) {
     this.showAllComment = true
     this.selectedComment = index
+  }
+
+  async loadComments () {
+    const gameId = this.gameId
+    if (!gameId) {
+      return
+    }
+    this.comments = await gameComments(gameId)
+    await this.loadUserComment()
+  }
+
+  private loadUserComment () {
+    const user = this.user
+    if (!user) {
+      return
+    }
+    const comment = this.comments.find(it => it.username === user.username)
+    if (comment) {
+      this.commentInput = comment.content
+      this.commentScore = comment.score
+    }
+  }
+
+  async postComment () {
+    const gameId = this.gameId
+    if (!gameId) {
+      return
+    }
+    const user = this.user
+    if (!user) {
+      return
+    }
+    const comment = this.comments.find(it => it.username === user.username)
+
+    if (!comment) {
+      await createComment(gameId, this.commentScore, this.commentInput)
+    } else {
+      await updateComment(gameId, this.commentScore, this.commentInput)
+    }
+    this.$message.success('Comment success!')
+
+    await this.loadComments()
   }
 }
 
@@ -344,6 +420,25 @@ export default class GamePage extends Vue {
   .game-comment {
     width: calc((100% - 3 * 1.2em) / 3);
     margin-right: 1.2em;
+  }
+}
+
+.game-post-comment-input {
+  margin: 1em 0;
+  min-height: 10em;
+  padding: 1em 1.5em;
+  background: $secondary-background;
+  color: $tertiary-text;
+  border-color: transparent;
+}
+
+.game-post-comment-button {
+  margin: 1em 0;
+}
+
+@media (max-width: 768px) {
+  .game-post-comment-button {
+    width: 100%;
   }
 }
 
