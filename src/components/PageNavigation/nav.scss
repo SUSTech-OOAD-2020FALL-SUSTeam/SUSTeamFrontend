@@ -1,6 +1,7 @@
 @import "@/style/global.scss";
 
 .page-nav {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;

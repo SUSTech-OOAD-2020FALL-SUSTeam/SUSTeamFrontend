@@ -1,8 +1,13 @@
 <template>
-  <div class="searcher">
+  <div
+    class="searcher"
+    @click="$refs.searchInput.focus()"
+  >
     <a-input
+      ref="searchInput"
       v-model="searchText"
       placeholder="搜索"
+      class="search-input"
     >
       <a-icon
         slot="prefix"
@@ -55,6 +60,22 @@ export default class Searcher extends Vue {
 
 .search-icon {
   color: white;
+}
+
+@media (max-width: 768px) {
+  .searcher {
+    width: 3.8em;
+    height: 2.8em;
+  }
+  .search-input {
+    position: absolute;
+    width: 3.8em;
+
+    &:focus-within {
+      left: 0;
+      width: 100%;
+    }
+  }
 }
 
 </style>

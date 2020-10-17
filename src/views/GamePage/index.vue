@@ -284,6 +284,12 @@ export default class GamePage extends Vue {
   align-items: flex-start;
 }
 
+@media (min-width: 768px) and (max-width: 1024px) {
+  .game-introduction-container {
+    padding: 0 6em;
+  }
+}
+
 .game-introduction-cover-image {
   max-width: 25%;
   margin-right: 2em;
@@ -453,9 +459,6 @@ export default class GamePage extends Vue {
 }
 
 @media (max-width: 1024px) {
-  .game-introduction-container {
-    padding: 0 6em;
-  }
   .game-introduction {
     font-size: 1.25em;
   }
