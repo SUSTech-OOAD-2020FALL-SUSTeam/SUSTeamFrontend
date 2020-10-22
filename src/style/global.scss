@@ -16,3 +16,16 @@ $secondary-background: #2a2a2a;
 @function lighten($color, $number) {
   @return scale-color($color, $lightness: $number);
 }
+
+@mixin dark-markdown {
+  color: $tertiary-text;
+
+  & /deep/ h1,
+  & /deep/ h2,
+  & /deep/ h3,
+  & /deep/ h4,
+  & /deep/ h5,
+  & /deep/ h6 {
+    color: $secondary-text;
+  }
+}

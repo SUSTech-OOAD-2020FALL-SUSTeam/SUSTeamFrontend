@@ -353,16 +353,7 @@ export default class GamePage extends Vue {
 }
 
 .game-description {
-  color: $tertiary-text;
-
-  & /deep/ h1,
-  & /deep/ h2,
-  & /deep/ h3,
-  & /deep/ h4,
-  & /deep/ h5,
-  & /deep/ h6 {
-    color: $secondary-text;
-  }
+  @include dark-markdown();
 }
 
 .game-comment-body {
@@ -391,6 +382,7 @@ export default class GamePage extends Vue {
 }
 
 .game-comment {
+  @include dark-markdown();
   height: 24em;
   margin-bottom: 1.5em;
   transition: all .2s;
