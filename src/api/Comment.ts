@@ -4,7 +4,7 @@ import request from '@/utils/Request'
 import { Comment, parseComment } from '@/typings/Comment'
 
 export async function gameComments (gameId: number): Promise<Array<Comment>> {
-  const data: any = await request.get(`/game/${gameId}/comment`)
+  const data: any = await request.get(`/game/${gameId}/comments`)
   const comments: Array<any> = data.comments
   return comments.map(it => parseComment(it))
 }
