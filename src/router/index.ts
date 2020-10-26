@@ -7,6 +7,7 @@ import GamePage from '@/views/GamePage/index.vue'
 import CommonPage from '@/views/CommonPage.vue'
 import Login from '@/views/Login/index.vue'
 import Signup from '@/views/Signup/index.vue'
+import AnnouncementPage from '@/views/AnnouncementPage/index.vue'
 
 Vue.use(VueRouter)
 
@@ -39,6 +40,11 @@ const routes: Array<RouteConfig> = [
         path: '/game/:gameId',
         name: 'GamePage',
         component: GamePage
+      },
+      {
+        path: '/game/:gameId/announcement/:title',
+        name: 'AnnouncementPage',
+        component: AnnouncementPage
       },
       {
         path: '*',

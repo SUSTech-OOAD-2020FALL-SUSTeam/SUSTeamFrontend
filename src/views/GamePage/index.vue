@@ -80,6 +80,48 @@
           </div>
         </div>
       </div>
+      <div class="game-announcement-container game-content">
+        <div class="game-content-title">
+          公告
+        </div>
+        <div class="game-announcement-body game-content-body">
+          <div
+            v-if="announcements.length > 5"
+            class="game-announcement-control"
+          >
+            <a
+              class="game-announcement-control-link"
+              @click="triggerShowAllAnnouncement"
+            >
+              {{ showAllAnnouncement ? '关闭公告' : '查看所有公告' }}
+            </a>
+          </div>
+          <div
+            class="game-announcement-box"
+            :class="{'close': !showAllAnnouncement}"
+          >
+            <div
+              v-if="announcements.length === 0"
+              class="announcement-empty"
+            >
+              暂无公告
+            </div>
+            <router-link
+              v-for="(announcement, index) in announcements"
+              :key="`announcement-${index}`"
+              class="game-announcement"
+              :to="`/game/${gameId}/announcement/${announcement.title}`"
+            >
+              <div class="announcement-title">
+                {{ announcement.title }}
+              </div>
+              <div class="announcement-time">
+                {{ announcement.announceTime.toDateString() }}
+              </div>
+            </router-link>
+          </div>
+        </div>
+      </div>
       <div class="game-comment-container game-content">
         <div class="game-content-title">
           评论
@@ -147,14 +189,18 @@ import { Comment, EMPTY_COMMENT } from '@/typings/Comment'
 import { createComment, gameComments, updateComment } from '@/api/Comment'
 import { UserStore } from '@/store/modules/UserStoreModule'
 import { Watch } from 'vue-property-decorator'
+import { Announcement } from '@/typings/Announcement'
+import { gameAnnouncements } from '@/api/Announcement'
 
 @Component({ components: { Searcher, ImageGallery, CommentCard, VueMarkdown } })
 export default class GamePage extends Vue {
   game: GameDetail = EMPTY_GAME_DETAIL
 
   comments: Array<Comment> = []
+  announcements: Array<Announcement> = []
 
   showAllComment = false
+  showAllAnnouncement = false
 
   selectedComment = -1
 
@@ -174,6 +220,7 @@ export default class GamePage extends Vue {
       .catch(() => {
         this.$message.error('Game not exist!')
       })
+    this.loadAnnouncements()
     this.loadComments()
   }
 
@@ -208,9 +255,21 @@ export default class GamePage extends Vue {
     this.selectedComment = -1
   }
 
+  triggerShowAllAnnouncement () {
+    this.showAllAnnouncement = !this.showAllAnnouncement
+  }
+
   selectComment (index: number) {
     this.showAllComment = true
     this.selectedComment = index
+  }
+
+  async loadAnnouncements () {
+    const gameId = this.gameId
+    if (!gameId) {
+      return
+    }
+    this.announcements = await gameAnnouncements(gameId)
   }
 
   async loadComments () {
@@ -274,10 +333,6 @@ export default class GamePage extends Vue {
   background: darken($secondary-background, 15%);
 }
 
-.game-content {
-  padding: 2em 0;
-}
-
 .game-introduction-container {
   display: flex;
   flex-wrap: wrap;
@@ -317,13 +372,58 @@ export default class GamePage extends Vue {
   height: 3.6em;
 }
 
+@media (min-width: 1024px) and (max-width: 1280px) {
+  .purchase-button {
+    width: 12em;
+    height: 2.6em;
+  }
+  .game-introduction {
+    font-size: 1.25em;
+  }
+}
+
+@media (max-width: 1024px) {
+  .game-introduction {
+    font-size: 1.25em;
+  }
+  .purchase-button, .purchase-box {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .purchase-box {
+    margin-left: 2em;
+  }
+}
+
 .game-content {
   display: flex;
+  padding: 2em 0;
 }
 
 .game-content-title {
   font-size: 1.2em;
   margin-bottom: 1.5em;
+}
+
+@media (min-width: 1024px) {
+  .game-content {
+    flex-direction: row;
+  }
+  .game-content-title {
+    width: 27.5%;
+  }
+  .game-content-body {
+    flex: 1;
+  }
+}
+
+@media (max-width: 1024px) {
+  .game-content {
+    flex-direction: column;
+    padding: 3em 2.5em 0;
+  }
 }
 
 .game-description-body {
@@ -356,18 +456,61 @@ export default class GamePage extends Vue {
   @include dark-markdown();
 }
 
-.game-comment-body {
+.game-announcement-body, .game-comment-body {
   display: flex;
   flex-direction: column;
   align-items: stretch;
 }
 
-.game-comment-control {
+.game-announcement-control, .game-comment-control {
   align-self: flex-end;
   padding-bottom: 1.5em;
 
-  .game-comment-control-link {
+  .game-comment-control-link, .game-announcement-control-link {
     color: $secondary-text;
+  }
+}
+
+.announcement-empty {
+  color: $secondary-text;
+}
+
+.game-announcement-box {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all .2s;
+
+  &.close {
+    max-height: 12.5em;
+  }
+}
+
+.game-announcement {
+  display: flex;
+  align-items: stretch;
+  height: 2.5em;
+
+  color: $tertiary-text;
+  background: $secondary-background;
+
+  &:hover {
+    background: lighten($secondary-background, 15%);
+  }
+
+  .announcement-title {
+    width: 0;
+    flex: 1;
+    overflow: hidden;
+    line-height: 2.5em;
+    margin: 0 1.5em;
+  }
+
+  .announcement-time {
+    text-align: right;
+    line-height: 2.5em;
+    margin: 0 1.5em;
+    width: 10em;
   }
 }
 
@@ -437,44 +580,6 @@ export default class GamePage extends Vue {
 @media (max-width: 768px) {
   .game-post-comment-button {
     width: 100%;
-  }
-}
-
-@media (min-width: 1024px) and (max-width: 1280px) {
-  .purchase-button {
-    width: 12em;
-    height: 2.6em;
-  }
-  .game-introduction {
-    font-size: 1.25em;
-  }
-}
-
-@media (max-width: 1024px) {
-  .game-introduction {
-    font-size: 1.25em;
-  }
-  .purchase-button, .purchase-box {
-    width: 100%;
-  }
-  .game-content {
-    flex-direction: column;
-    padding: 3em 2.5em 0;
-  }
-}
-
-@media (min-width: 1024px) {
-  .purchase-box {
-    margin-left: 2em;
-  }
-  .game-content {
-    flex-direction: row;
-  }
-  .game-content-title {
-    width: 27.5%;
-  }
-  .game-content-body {
-    flex: 1;
   }
 }
 
