@@ -104,7 +104,15 @@ export default class Browse extends Vue {
   tags: Array<string> = []
 
   mounted () {
-    games(this.order.key).then(it => { this.games = it })
+    const tag = this.$route.query.tag
+    if (typeof tag === 'string') {
+      this.filterSelectedKeys.push(tag)
+    } else if (Array.isArray(tag)) {
+      this.filterSelectedKeys.push(...(tag as Array<string>))
+    } else {
+      games(this.order.key).then(it => { this.games = it })
+    }
+
     tags().then(it => { this.tags = it })
   }
 
@@ -116,6 +124,14 @@ export default class Browse extends Vue {
   @Watch('filterSelectedKeys')
   onTagsChanged (val: Array<string>) {
     gamesWithTag(val).then(it => { this.games = it })
+
+    const searchParams = new URLSearchParams(window.location.search)
+    searchParams.delete('tag')
+    val.forEach(value => {
+      searchParams.append('tag', value)
+    })
+    const newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?' + searchParams.toString()
+    window.history.pushState({ path: newUrl }, '', newUrl)
   }
 }
 
