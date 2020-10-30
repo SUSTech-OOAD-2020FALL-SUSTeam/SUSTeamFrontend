@@ -1,20 +1,9 @@
 <template>
   <div class="page-nav">
-    <nav>
-      <router-link
-        class="link"
-        to="/"
-      >
-        探索
-      </router-link>
-      <router-link
-        class="link"
-        to="/browse"
-      >
-        浏览
-      </router-link>
-    </nav>
-    <Searcher />
+    <Breadcrumb
+      :items="items"
+    />
+    <Searcher v-if="showSearcher" />
   </div>
 </template>
 
@@ -22,9 +11,22 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import Searcher from '@/components/PageNavigation/Searcher.vue'
+import Breadcrumb, { BreadcrumbItem } from '@/components/PageNavigation/Breadcrumb.vue'
+import { Prop } from 'vue-property-decorator'
 
-@Component({ components: { Searcher } })
+@Component({ components: { Searcher, Breadcrumb } })
 export default class PageNavigation extends Vue {
+  @Prop({ default: true })
+  showSearcher!: boolean
+
+  @Prop({
+    default: [
+      { content: '探索', url: '/' },
+      { content: '浏览', url: '/browse' }
+    ]
+  })
+  items!: BreadcrumbItem[]
+
   searchText = ''
 }
 
@@ -34,6 +36,26 @@ export default class PageNavigation extends Vue {
 
 @import "@/style/global.scss";
 
-@import "nav.scss";
+.page-nav {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4em;
+  padding: 0 1em;
+}
+
+@media (min-width: 1024px) {
+  .page-nav {
+    padding: 0 12.5vw;
+    height: 80px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .page-nav {
+    height: 100px;
+  }
+}
 
 </style>

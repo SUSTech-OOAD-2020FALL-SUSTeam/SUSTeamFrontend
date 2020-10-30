@@ -1,21 +1,11 @@
 <template>
   <main class="game-page dark">
-    <div class="page-nav">
-      <nav>
-        <router-link
-          class="link"
-          to="/"
-        >
-          <a-icon type="left" />
-          返回商城
-        </router-link>
-        <span class="split">|</span>
-        <span class="nav-game-name">
-          {{ game.name }}
-        </span>
-      </nav>
-      <Searcher />
-    </div>
+    <PageNavigation
+      :items="[
+        {content: '返回商城', icon:'left', url:'/'},
+        {content: game.name}
+      ]"
+    />
     <ImageGallery
       :images="game.images.map(it => it.url)"
       class="page-item"
@@ -179,7 +169,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import Searcher from '@/components/PageNavigation/Searcher.vue'
 import { EMPTY_GAME_DETAIL, GameDetail } from '@/typings/GameDetail'
 import { gameDetail } from '@/api/Game'
 import { CommentCard, ImageGallery } from '@/views/GamePage/components'
@@ -191,8 +180,9 @@ import { UserStore } from '@/store/modules/UserStoreModule'
 import { Watch } from 'vue-property-decorator'
 import { Announcement } from '@/typings/Announcement'
 import { gameAnnouncements } from '@/api/Announcement'
+import PageNavigation from '@/components/PageNavigation/index.vue'
 
-@Component({ components: { Searcher, ImageGallery, CommentCard, VueMarkdown } })
+@Component({ components: { PageNavigation, ImageGallery, CommentCard, VueMarkdown } })
 export default class GamePage extends Vue {
   game: GameDetail = EMPTY_GAME_DETAIL
 
@@ -322,12 +312,6 @@ export default class GamePage extends Vue {
 @import "@/style/global.scss";
 
 @import "@/style/page.scss";
-
-@import "@/components/PageNavigation/nav.scss";
-
-.split {
-  color: $tertiary-text;
-}
 
 .game-container {
   background: darken($secondary-background, 15%);

@@ -1,29 +1,13 @@
 <template>
   <main class="announcement-page dark">
-    <div class="page-nav">
-      <nav
-        class="page-nav-bar"
-      >
-        <router-link
-          class="link nav-home"
-          to="/"
-        >
-          <a-icon type="left" />
-          返回商城
-        </router-link>
-        <span class="split">|</span>
-        <router-link
-          class="link nav-game"
-          :to="`/game/${gameId}`"
-        >
-          {{ game.name }}
-        </router-link>
-        <span class="split">|</span>
-        <span class="nav-title">
-          {{ announcement.title }}
-        </span>
-      </nav>
-    </div>
+    <PageNavigation
+      :items="[
+        {content: '返回商城', icon:'left', url:'/'},
+        {content: game.name, url:`/game/${gameId}`, flex:1},
+        {content: announcement.title, flex:1},
+      ]"
+      :show-searcher="false"
+    />
     <div class="announcement-container page-container">
       <div class="announcement">
         <h1 class="title">
@@ -44,15 +28,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import Searcher from '@/components/PageNavigation/Searcher.vue'
 import { EMPTY_GAME_DETAIL, GameDetail } from '@/typings/GameDetail'
 import { gameDetail } from '@/api/Game'
 import { CommentCard, ImageGallery } from '@/views/GamePage/components'
 import VueMarkdown from 'vue-markdown'
 import { Announcement } from '@/typings/Announcement'
 import { gameAnnouncements } from '@/api/Announcement'
+import PageNavigation from '@/components/PageNavigation/index.vue'
 
-@Component({ components: { Searcher, ImageGallery, CommentCard, VueMarkdown } })
+@Component({ components: { PageNavigation, ImageGallery, CommentCard, VueMarkdown } })
 export default class AnnouncementPage extends Vue {
   game: GameDetail = EMPTY_GAME_DETAIL
   announcements: Array<Announcement> = []
@@ -117,33 +101,10 @@ export default class AnnouncementPage extends Vue {
 
 @import "@/style/page.scss";
 
-@import "@/components/PageNavigation/nav.scss";
-
 .announcement-page {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-}
-
-.page-nav-bar {
-  flex: 1;
-  display: flex;
-  overflow: hidden;
-}
-
-.nav-home {
-  flex-shrink: 0;
-}
-
-.nav-game, .nav-title {
-  flex-shrink: 1;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.split {
-  color: $tertiary-text;
 }
 
 .page-container {
