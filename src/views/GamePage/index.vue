@@ -28,6 +28,7 @@
             <a-button
               type="primary"
               class="purchase-button"
+              @click="$router.push(`/game/${gameId}/purchase`)"
             >
               立即购买
             </a-button>
