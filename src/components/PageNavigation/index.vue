@@ -20,7 +20,7 @@ export default class PageNavigation extends Vue {
   showSearcher!: boolean
 
   @Prop({
-    default: [
+    default: () => [
       { content: '探索', url: '/' },
       { content: '浏览', url: '/browse' }
     ]
