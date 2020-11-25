@@ -7,6 +7,7 @@ import GamePage from '@/views/GamePage/index.vue'
 import CommonPage from '@/views/CommonPage.vue'
 import Login from '@/views/Login/index.vue'
 import Signup from '@/views/Signup/index.vue'
+import Library from '@/views/Library/index.vue'
 import AnnouncementPage from '@/views/AnnouncementPage/index.vue'
 import Purchase from '@/views/Purchase/index.vue'
 
@@ -22,6 +23,11 @@ const routes: Array<RouteConfig> = [
     path: '/signup',
     name: 'Signup',
     component: Signup
+  },
+  {
+    path: '/library',
+    name: 'Library',
+    component: Library
   },
   {
     path: '',

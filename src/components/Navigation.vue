@@ -28,6 +28,13 @@
             商城
           </router-link>
           <router-link
+            v-if="user"
+            to="/library"
+            class="link"
+          >
+            库存
+          </router-link>
+          <router-link
             to="/help"
             class="link"
           >
@@ -94,7 +101,7 @@
             </div>
           </template>
           <a class="button primary">
-            获取客户端
+            客户端支持
           </a>
         </div>
       </div>
