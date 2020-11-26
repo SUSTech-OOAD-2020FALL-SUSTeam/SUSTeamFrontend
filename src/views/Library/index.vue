@@ -45,6 +45,7 @@
           <button
             v-else
             class="main-button launch-button"
+            @click="launch(game.gameId)"
           >
             启动
           </button>
@@ -68,7 +69,7 @@ import Navigation from '@/components/Navigation.vue'
 import { GameProfile } from '@/typings/GameProfile'
 import { games } from '@/api/Order'
 import { LocalGameStatus } from '@/typings/LocalGameStatus'
-import { downloadGame, localGameStatus } from '@/utils/Client'
+import * as Client from '@/utils/Client'
 
 @Component({ components: { Navigation, VueMarkdown } })
 export default class Library extends Vue {
@@ -83,7 +84,7 @@ export default class Library extends Vue {
       return
     }
     this.games = await games(user.username)
-    this.gameStatusList = localGameStatus(this.games).map(it => it.status)
+    this.gameStatusList = Client.localGameStatus(this.games).map(it => it.status)
   }
 
   get user () {
@@ -105,8 +106,17 @@ export default class Library extends Vue {
   }
 
   async download (gameId: number) {
-    await downloadGame(gameId)
-    this.gameStatusList = localGameStatus(this.games).map(it => it.status)
+    await Client.downloadGame(gameId)
+    this.gameStatusList = Client.localGameStatus(this.games).map(it => it.status)
+  }
+
+  async launch (gameId: number) {
+    try {
+      await Client.launchGame(gameId)
+    } catch (err) {
+      this.$message.error('launch game failed!')
+      console.error(err)
+    }
   }
 }
 

@@ -12,6 +12,8 @@ const require = window.require
 
 const fs = require('fs-extra')
 const unzipper = require('unzipper')
+const os = require('os')
+const childProcess = require('child_process')
 
 const appData = window.remote?.app.getPath('appData') as string
 const root = `${appData}/susteam`
@@ -87,6 +89,31 @@ export async function downloadGame (gameId: number) {
   }
 
   await saveLocalGameStatus()
+}
+
+export async function launchGame (gameId: number) {
+  const gamePath = `${gameDir}/${gameId}`
+
+  let launchFile: string
+  if (os.type().toLowerCase().includes('windows')) {
+    launchFile = `${gamePath}/launch.bat`
+  } else {
+    launchFile = `${gamePath}/launch.sh`
+  }
+
+  if (!await fs.pathExists(launchFile)) {
+    throw new Error('launch file not exist')
+  }
+
+  childProcess.execFile(launchFile, [getToken()!], {
+    cwd: gamePath
+  }, (error: any, stdout: string, stderr: string) => {
+    if (error) {
+      throw error
+    }
+    console.log(stdout)
+    console.error(stderr)
+  })
 }
 
 export async function launch () {
