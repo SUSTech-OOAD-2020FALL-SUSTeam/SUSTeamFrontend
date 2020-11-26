@@ -2,12 +2,19 @@ import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import path from 'path'
+import Axios from 'axios'
+import * as fs from 'fs-extra'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
+
+let window: BrowserWindow
 
 async function createWindow () {
   // Create the browser window.
@@ -21,6 +28,7 @@ async function createWindow () {
       preload: path.join(__dirname, 'preload.js')
     }
   })
+  window = win
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -80,4 +88,45 @@ if (isDevelopment) {
 
 ipcMain.on('vue-launch', () => {
   console.log('vue-launch')
+})
+
+const appData = app.getPath('appData') as string
+const root = `${appData}/susteam`
+const tempDir = `${root}/temp`
+
+ipcMain.on('download', (event, args: {url: string; id: number; token: string}) => {
+  Axios.request({
+    url: args.url,
+    method: 'get',
+    responseType: 'stream',
+    headers: { authorization: `Bearer ${args.token}` }
+  }).then(respond => {
+    const { data, headers } = respond
+
+    const totalLength: string = headers['content-length']
+    const contentDisposition: string | undefined = headers['content-disposition']
+    if (!contentDisposition) {
+      console.error('download error')
+      return
+    }
+    const filename = contentDisposition.match(/filename="(.*)"/)![1]
+
+    const filePath = `${tempDir}/${filename}`
+    const writer = fs.createWriteStream(filePath)
+
+    const totalSize = parseInt(totalLength)
+    let downloaded = 0
+    data.on('data', (data: ArrayBuffer) => {
+      downloaded += Buffer.byteLength(data)
+      window.setProgressBar(downloaded / totalSize)
+    })
+    data.on('end', () => {
+      window.setProgressBar(-1)
+      event.sender.send('downloadEnd', { id: args.id, path: filePath })
+    })
+    data.on('error', (error: any) => {
+      event.sender.send('downloadError', { id: args.id, error: error })
+    })
+    data.pipe(writer)
+  })
 })

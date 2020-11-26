@@ -35,8 +35,18 @@
           class="game-cover"
         >
         <div class="game-preview-shadow">
-          <button class="download-button">
+          <button
+            v-if="gameStatus.version === null"
+            class="main-button download-button"
+            @click="download(game.gameId)"
+          >
             下载
+          </button>
+          <button
+            v-else
+            class="main-button launch-button"
+          >
+            启动
           </button>
         </div>
         <div class="game-preview-box">
@@ -57,10 +67,13 @@ import { UserStore } from '@/store/modules/UserStoreModule'
 import Navigation from '@/components/Navigation.vue'
 import { GameProfile } from '@/typings/GameProfile'
 import { games } from '@/api/Order'
+import { LocalGameStatus } from '@/typings/LocalGameStatus'
+import { downloadGame, localGameStatus } from '@/utils/Client'
 
 @Component({ components: { Navigation, VueMarkdown } })
 export default class Library extends Vue {
   games: Array<GameProfile> = []
+  gameStatusList: Array<LocalGameStatus> = []
 
   selectedGame = -1
 
@@ -70,6 +83,7 @@ export default class Library extends Vue {
       return
     }
     this.games = await games(user.username)
+    this.gameStatusList = localGameStatus(this.games).map(it => it.status)
   }
 
   get user () {
@@ -81,6 +95,18 @@ export default class Library extends Vue {
       return this.games[this.selectedGame]
     }
     return null
+  }
+
+  get gameStatus () {
+    if (this.selectedGame !== -1) {
+      return this.gameStatusList[this.selectedGame]
+    }
+    return null
+  }
+
+  async download (gameId: number) {
+    await downloadGame(gameId)
+    this.gameStatusList = localGameStatus(this.games).map(it => it.status)
   }
 }
 
@@ -183,18 +209,26 @@ export default class Library extends Vue {
   background-image: linear-gradient(rgba(0, 0, 0, 0), darken($secondary-background, 30%));
 }
 
-.download-button {
+.main-button {
   box-sizing: border-box;
   width: 180px;
   height: 50px;
   z-index: 5;
-  background: lighten($primary-color, 20%);
-
   outline: none;
   border: none;
+}
 
+.download-button {
+  background: lighten($primary-color, 20%);
   &:hover {
     background: lighten($primary-color, 30%);
+  }
+}
+
+.launch-button {
+  background: #24b648;
+  &:hover {
+    background: lighten(#24b648, 10%);
   }
 }
 
