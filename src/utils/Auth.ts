@@ -1,20 +1,24 @@
-import Cookies from 'js-cookie'
-
 const TokenKey = 'SUSTeam-Token'
 
 export function getToken (): string | undefined {
-  return Cookies.get(TokenKey)
+  const token = window.localStorage.getItem(TokenKey)
+  if (token) {
+    return token
+  } else {
+    return undefined
+  }
 }
 
 export function setToken (token: string | undefined): string | undefined {
   if (token === undefined) {
-    Cookies.remove(TokenKey)
+    window.localStorage.removeItem(TokenKey)
     return undefined
   } else {
-    return Cookies.set(TokenKey, token, { expires: 7 })
+    window.localStorage.setItem(TokenKey, token)
+    return token
   }
 }
 
 export function clearToken (): void {
-  return Cookies.remove(TokenKey)
+  window.localStorage.removeItem(TokenKey)
 }
