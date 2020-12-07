@@ -11,6 +11,7 @@ import AnnouncementPage from '@/views/AnnouncementPage/index.vue'
 import Purchase from '@/views/Purchase/index.vue'
 import DevPanel from '@/views/DevPanel/DevPanel.vue'
 import DetailPanel from '@/views/DevPanel/DetailPanel.vue'
+import PersonalProfile from '@/views/Personal/index.vue'
 
 Vue.use(VueRouter)
 
@@ -34,6 +35,11 @@ const routes: Array<RouteConfig> = [
     path: '/developer/:gameId',
     name: 'Developer Panel Detail',
     component: DetailPanel
+  },
+  {
+    path: '/account/personal',
+    name: 'Personal Profile',
+    component: PersonalProfile
   },
   {
     path: '',
