@@ -9,6 +9,8 @@ import Login from '@/views/Login/index.vue'
 import Signup from '@/views/Signup/index.vue'
 import AnnouncementPage from '@/views/AnnouncementPage/index.vue'
 import Purchase from '@/views/Purchase/index.vue'
+import DevPanel from '@/views/DevPanel/DevPanel.vue'
+import DetailPanel from '@/views/DevPanel/DetailPanel.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +24,16 @@ const routes: Array<RouteConfig> = [
     path: '/signup',
     name: 'Signup',
     component: Signup
+  },
+  {
+    path: '/developer',
+    name: 'Developer Panel',
+    component: DevPanel
+  },
+  {
+    path: '/developer/:gameId',
+    name: 'Developer Panel Detail',
+    component: DetailPanel
   },
   {
     path: '',

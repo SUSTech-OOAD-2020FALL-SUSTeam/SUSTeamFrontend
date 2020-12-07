@@ -1,7 +1,7 @@
 <template>
   <div class="game-card">
     <router-link
-      :to="`/game/${game.gameId}`"
+      :to="`/${dst}/${game.gameId}`"
       class="wrapper"
     >
       <div class="game-image-wrapper">
@@ -35,6 +35,9 @@ import { GameProfile } from '@/typings/GameProfile'
 export default class GameCard extends Vue {
   @Prop()
   game!: GameProfile
+
+  @Prop({ default: 'game' })
+  dst!: string
 }
 
 </script>
