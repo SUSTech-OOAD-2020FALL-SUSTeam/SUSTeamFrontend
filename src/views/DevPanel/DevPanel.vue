@@ -1,11 +1,9 @@
 <template>
-  <main class="home dark">
+  <div class="app">
     <Navigation />
-    <div class="page-container">
-      <GameGallery :games="listGames" />
-    </div>
+    <router-view class="main" />
     <PageFooter />
-  </main>
+  </div>
 </template>
 
 <script lang="ts">
@@ -14,17 +12,12 @@ import Component from 'vue-class-component'
 import Navigation from '@/components/Navigation.vue'
 import PageFooter from '@/components/PageFooter.vue'
 
-import { GameProfile } from '@/typings/GameProfile'
-import { games } from '@/api/Developer'
 import GameGallery from '@/views/DevPanel/components/GameGallery.vue'
+import MyDevelopedGames from '@/views/DevPanel/pages/MyDevelopedGames.vue'
 
-@Component({ components: { GameGallery, Navigation, PageFooter } })
+@Component({ components: { MyDevelopedGames, GameGallery, Navigation, PageFooter } })
 export default class DevPanel extends Vue {
-  listGames: Array<GameProfile> = []
 
-  mounted () {
-    games().then(it => { this.listGames = it })
-  }
 }
 
 </script>
@@ -38,6 +31,18 @@ export default class DevPanel extends Vue {
 .page-container > * {
   margin-bottom: 3.6em;
   margin-top: 3.6em;
+}
+
+.main {
+  flex: 1;
+}
+
+.app {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 </style>

@@ -1,6 +1,5 @@
 <template>
   <main class="home dark">
-    <Navigation />
     <PageNavigation
       :items="[
         {content: '我开发的游戏', icon:'left', url:'/developer'},
@@ -13,7 +12,6 @@
         <vue-markdown :source="game.description" />
       </div>
     </div>
-    <PageFooter />
   </main>
 </template>
 

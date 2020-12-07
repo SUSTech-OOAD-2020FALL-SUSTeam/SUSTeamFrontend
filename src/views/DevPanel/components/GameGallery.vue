@@ -57,12 +57,13 @@ export default class GameGallery extends Vue {
 .list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: flex-start;
 }
 
 .game-card-wrapper {
   box-sizing: border-box;
   width: calc((100% - (2 - 1) * 1.2em) / 2);
+  margin: auto 0.3em;
 }
 
 @media (max-width: 1024px) {
@@ -76,6 +77,7 @@ export default class GameGallery extends Vue {
 @media (min-width: 768px) {
   .game-card-wrapper {
     width: calc((100% - (4 - 1) * 1.2em) / 4);
+    margin: auto calc(3 / 4 * 0.6em);
   }
 }
 
@@ -85,6 +87,7 @@ export default class GameGallery extends Vue {
   }
   .game-card-wrapper {
     width: calc((100% - (5 - 1) * 1.2em) / 5);
+    margin: auto calc(4 / 5 * 0.6em);
   }
 }
 
