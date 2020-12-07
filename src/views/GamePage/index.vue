@@ -26,11 +26,19 @@
               ${{ game.price }}
             </div>
             <a-button
+              v-if="!purchased"
               type="primary"
               class="purchase-button"
               @click="$router.push(`/game/${gameId}/purchase`)"
             >
               立即购买
+            </a-button>
+            <a-button
+              v-else
+              class="purchase-button"
+              disabled
+            >
+              已购买
             </a-button>
           </div>
         </div>
@@ -173,7 +181,7 @@ import Component from 'vue-class-component'
 import { EMPTY_GAME_DETAIL, GameDetail } from '@/typings/GameDetail'
 import { gameDetail } from '@/api/Game'
 import { CommentCard, ImageGallery } from '@/views/GamePage/components'
-import { EMPTY_GAME } from '@/typings/GameProfile'
+import { EMPTY_GAME, parseGameProfile } from '@/typings/GameProfile'
 import VueMarkdown from 'vue-markdown'
 import { Comment, EMPTY_COMMENT } from '@/typings/Comment'
 import { createComment, gameComments, updateComment } from '@/api/Comment'
@@ -182,10 +190,13 @@ import { Watch } from 'vue-property-decorator'
 import { Announcement } from '@/typings/Announcement'
 import { gameAnnouncements } from '@/api/Announcement'
 import PageNavigation from '@/components/PageNavigation/index.vue'
+import { games } from '@/api/Order'
 
 @Component({ components: { PageNavigation, ImageGallery, CommentCard, VueMarkdown } })
 export default class GamePage extends Vue {
   game: GameDetail = EMPTY_GAME_DETAIL
+
+  purchased = false
 
   comments: Array<Comment> = []
   announcements: Array<Announcement> = []
@@ -207,6 +218,12 @@ export default class GamePage extends Vue {
     gameDetail(gameId)
       .then(it => {
         this.game = it
+        if (UserStore.user !== null) {
+          games(UserStore.user.username).then(games => {
+            this.purchased = games.map(game => game.gameId)
+              .includes(it.gameId)
+          })
+        }
       })
       .catch(() => {
         this.$message.error('Game not exist!')
