@@ -13,6 +13,8 @@ import DevPanel from '@/views/DevPanel/DevPanel.vue'
 import DetailPanel from '@/views/DevPanel/pages/DetailPanel.vue'
 import MyDevelopedGames from '@/views/DevPanel/pages/MyDevelopedGames.vue'
 import PersonalProfile from '@/views/Personal/index.vue'
+import DetailedProfile from '@/views/Personal/pages/DetailedProfile.vue'
+import ModifyProfile from '@/views/Personal/pages/ModifyProfile.vue'
 
 Vue.use(VueRouter)
 
@@ -45,8 +47,19 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/account/personal',
-    name: 'Personal Profile',
-    component: PersonalProfile
+    component: PersonalProfile,
+    children: [
+      {
+        path: '/',
+        name: 'Personal Profile',
+        component: DetailedProfile
+      },
+      {
+        path: 'edit',
+        name: 'Edit Personal Profile',
+        component: ModifyProfile
+      }
+    ]
   },
   {
     path: '',
