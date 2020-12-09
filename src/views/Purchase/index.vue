@@ -139,8 +139,13 @@ export default class AnnouncementPage extends Vue {
     }
 
     try {
-      await createOrder(gameId, this.finalPrice)
-      this.$message.success('purchase success')
+      const isSuccess: boolean = await createOrder(gameId, this.finalPrice)
+      if (isSuccess) {
+        await UserStore.update()
+        this.$message.success('purchase success')
+      } else {
+        this.$message.error('purchase failed')
+      }
     } catch (error) {
       if (typeof error === 'string') {
         this.$message.error(error)
