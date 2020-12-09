@@ -87,14 +87,17 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import GameCard from '@/components/GameCard.vue'
 import { UserStore } from '@/store/modules/UserStoreModule'
-import { UserRole } from '@/typings/User'
+import { EMPTY_USER } from '@/typings/User'
 import { GameProfile } from '@/typings/GameProfile'
 import { games } from '@/api/Order'
 
 @Component({ components: { GameCard } })
 export default class DetailedProfile extends Vue {
-  user: UserRole | null = UserStore.user
   purchasedGames: Array<GameProfile> = []
+
+  get user () {
+    return UserStore.user || EMPTY_USER
+  }
 
   mounted () {
     if (this.user !== null) {
