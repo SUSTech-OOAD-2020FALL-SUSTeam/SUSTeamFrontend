@@ -9,6 +9,7 @@ import Login from '@/views/Login/index.vue'
 import Signup from '@/views/Signup/index.vue'
 import AnnouncementPage from '@/views/AnnouncementPage/index.vue'
 import Purchase from '@/views/Purchase/index.vue'
+import PersonalProfile from '@/views/Personal/index.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,11 @@ const routes: Array<RouteConfig> = [
     path: '/signup',
     name: 'Signup',
     component: Signup
+  },
+  {
+    path: '/account/personal',
+    name: 'Personal Profile',
+    component: PersonalProfile
   },
   {
     path: '',
