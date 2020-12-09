@@ -15,6 +15,12 @@
           class="game-card"
         />
       </div>
+      <div class="game-card-wrapper">
+        <NewGameCard
+          :dst="'developer'"
+          class="game-card"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -22,13 +28,16 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { GameProfile } from '@/typings/GameProfile'
+import { EMPTY_GAME, GameProfile } from '@/typings/GameProfile'
 import GameCard from '@/components/GameCard.vue'
+import NewGameCard from '@/views/DevPanel/components/NewGameCard.vue'
 
-@Component({ components: { GameCard } })
+@Component({ components: { GameCard, NewGameCard } })
 export default class GameGallery extends Vue {
   @Prop()
   games!: Array<GameProfile>
+
+  addNewGame: GameProfile = EMPTY_GAME
 
   @Prop({ default: '我开发的游戏' })
   title!: string
@@ -41,7 +50,6 @@ export default class GameGallery extends Vue {
 </script>
 
 <style scoped lang="scss">
-
 .game-gallery {
   display: flex;
   flex-direction: column;
@@ -90,5 +98,4 @@ export default class GameGallery extends Vue {
     margin: auto calc(4 / 5 * 0.6em);
   }
 }
-
 </style>
