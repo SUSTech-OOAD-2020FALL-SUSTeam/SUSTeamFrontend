@@ -124,6 +124,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
+import router from '@/router'
 import { Store } from '@/store/modules/StoreModule'
 import { UserStore } from '@/store/modules/UserStoreModule'
 import { clearToken } from '@/utils/Auth'
@@ -152,6 +153,7 @@ export default class Navigation extends Vue {
     clearToken()
     await UserStore.update()
     this.$message.success('Logout success!')
+    await router.push('/')
   }
 }
 
