@@ -14,6 +14,7 @@ import DevHome from '@/views_dev/Home/index.vue'
 import DevNoFound from '@/views_dev/DevNoFound.vue'
 import DevGames from '@/views_dev/Games/index.vue'
 import DevGameEdit from '@/views_dev/GameEdit/index.vue'
+import PersonalProfile from '@/views/Personal/index.vue'
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,11 @@ const routes: Array<RouteConfig> = [
     path: '/signup',
     name: 'Signup',
     component: Signup
+  },
+  {
+    path: '/account/personal',
+    name: 'Personal Profile',
+    component: PersonalProfile
   },
   {
     path: '/dev',

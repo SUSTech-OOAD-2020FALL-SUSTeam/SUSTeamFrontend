@@ -8,9 +8,8 @@
       <a-card
         class="user-card"
         title="我的SUSTeam名片"
-        :head-style="{'color': '$primary-text'}"
+        :head-style="{color: '$primary-text'}"
       >
-        <a slot="extra">编辑</a>
         <div>
           <a-space
             align="start"
@@ -83,21 +82,20 @@ import Navigation from '@/components/Navigation.vue'
 import GameCard from '@/components/GameCard.vue'
 import PageFooter from '@/components/PageFooter.vue'
 import { UserStore } from '@/store/modules/UserStoreModule'
-import { UserRole } from '@/typings/User'
 import { GameProfile } from '@/typings/GameProfile'
 import { games } from '@/api/Order'
+import { EMPTY_USER } from '@/typings/User'
 
 @Component({ components: { Navigation, GameCard, PageFooter } })
 export default class PersonalProfile extends Vue {
-  user: UserRole | null = UserStore.user
   purchasedGames: Array<GameProfile> = []
 
-  mounted () {
-    if (this.user !== null) {
-      games(this.user.username).then(it => {
-        this.purchasedGames = it
-      })
-    }
+  get user () {
+    const dispUser = UserStore.user || EMPTY_USER
+    games(dispUser.username).then(it => {
+      this.purchasedGames = it
+    })
+    return dispUser
   }
 }
 </script>
