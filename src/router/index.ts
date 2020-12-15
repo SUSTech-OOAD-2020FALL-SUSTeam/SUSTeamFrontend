@@ -9,6 +9,9 @@ import Login from '@/views/Login/index.vue'
 import Signup from '@/views/Signup/index.vue'
 import AnnouncementPage from '@/views/AnnouncementPage/index.vue'
 import Purchase from '@/views/Purchase/index.vue'
+import DevPanel from '@/views_dev/DevPanel.vue'
+import DevHome from '@/views_dev/Home/index.vue'
+import DevNoFound from '@/views_dev/DevNoFound.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +25,23 @@ const routes: Array<RouteConfig> = [
     path: '/signup',
     name: 'Signup',
     component: Signup
+  },
+  {
+    path: '/dev',
+    name: 'DevPanel',
+    component: DevPanel,
+    children: [
+      {
+        path: '/',
+        name: 'DevHome',
+        component: DevHome
+      },
+      {
+        path: '*',
+        name: 'DevNoFound',
+        component: DevNoFound
+      }
+    ]
   },
   {
     path: '',
