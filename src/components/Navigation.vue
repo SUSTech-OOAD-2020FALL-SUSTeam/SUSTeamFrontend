@@ -28,6 +28,13 @@
             商城
           </router-link>
           <router-link
+            v-if="user && user.roles.includes('developer')"
+            to="/dev"
+            class="link"
+          >
+            开发者
+          </router-link>
+          <router-link
             to="/help"
             class="link"
           >
