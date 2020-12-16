@@ -118,6 +118,9 @@
           评论
         </div>
         <div class="game-comment-body game-content-body">
+          <div class="game-comment-average">
+            平均评分: {{ averageScore }}
+          </div>
           <div class="game-comment-control">
             <a
               class="game-comment-control-link"
@@ -229,6 +232,15 @@ export default class GamePage extends Vue {
       return [...this.comments, EMPTY_COMMENT]
     } else {
       return this.comments
+    }
+  }
+
+  get averageScore () {
+    if (this.comments.length === 0) {
+      return '暂无评分'
+    } else {
+      const sum = this.comments.map(it => it.score).reduce((a, b) => a + b)
+      return `${(sum / this.comments.length).toFixed(2)}`
     }
   }
 
@@ -497,6 +509,10 @@ export default class GamePage extends Vue {
     margin: 0 1.5em;
     width: 10em;
   }
+}
+
+.game-comment-average {
+  font-size: 1.2em;
 }
 
 .game-comment-box {
