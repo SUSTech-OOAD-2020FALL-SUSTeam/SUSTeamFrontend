@@ -68,6 +68,18 @@
 
     <div class="content-card">
       <div class="content-title">
+        折扣
+      </div>
+    </div>
+
+    <div class="content-container">
+      <div class="content-card">
+        <DiscountEdit :discounts="discounts" />
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="content-title">
         图片
       </div>
     </div>
@@ -154,7 +166,58 @@
 
     <div class="content-card">
       <div class="content-title">
+        公告
+      </div>
+    </div>
+
+    <div class="content-container">
+      <div class="content-card">
+        <AnnouncementEdit :announcements="announcements" />
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="content-title">
         标签
+      </div>
+    </div>
+    <div class="content-container">
+      <div class="content-card">
+        <a-space direction="vertical">
+          <div>
+            <template v-for="tag in tags">
+              <a-tag
+                :key="tag"
+                :closable="true"
+                @close="() => handleClose(tag)"
+              >
+                {{ tag }}
+              </a-tag>
+            </template>
+            <a-input
+              v-if="inputVisible"
+              ref="input"
+              type="text"
+              size="small"
+              :style="{ width: '78px' }"
+              :value="inputValue"
+              @change="handleInputChange"
+              @blur="handleInputConfirm"
+              @keyup.enter="handleInputConfirm"
+            />
+            <a-tag
+              v-else
+              style="background: #fff; borderStyle: dashed;"
+              @click="showInput"
+            >
+              <a-icon type="plus" /> New Tag
+            </a-tag>
+          </div>
+          <a-button>
+            <a-icon type="upload" />
+            Upload
+          </a-button>
+        </a-space>
       </div>
     </div>
   </div>
@@ -167,10 +230,37 @@ import { EMPTY_GAME_DETAIL, GameDetail } from '@/typings/GameDetail'
 import { gameDetail } from '@/api/Game'
 import { EMPTY_GAME } from '@/typings/GameProfile'
 import { updateGame } from '@/api/Developer'
+import DiscountEdit from '@/views_dev/components/DiscountEdit.vue'
+import { Discount } from '@/typings/Discount'
+import AnnouncementEdit from '@/views_dev/components/AnnouncementEdit.vue'
+import { Announcement } from '@/typings/Announcement'
 
-@Component
+@Component({ components: { AnnouncementEdit, DiscountEdit } })
 export default class DevGameEdit extends Vue {
   game: GameDetail = EMPTY_GAME_DETAIL
+
+  discounts: Array<Discount> = [{
+    gameId: 1,
+    type: 1,
+    percentage: 10,
+    startTime: new Date(),
+    endTime: new Date()
+  }]
+
+  announcements: Array<Announcement> = [
+    {
+      gameId: 1,
+      announceTime: new Date(),
+      title: 'Test1',
+      content: 'Hello world1'
+    },
+    {
+      gameId: 1,
+      announceTime: new Date(),
+      title: 'Test2',
+      content: 'very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very long Hello world2'
+    }
+  ]
 
   basicInfo = {
     price: 0,
@@ -179,6 +269,41 @@ export default class DevGameEdit extends Vue {
   }
 
   imageList = []
+
+  tags = ['Unremovable', 'Tag 2', '现在这里是假的标签']
+  inputVisible = false
+  inputValue = ''
+
+  handleClose (removedTag: string) {
+    const tags = this.tags.filter(tag => tag !== removedTag)
+    console.log(tags)
+    this.tags = tags
+  }
+
+  showInput () {
+    this.inputVisible = true
+    // this.$nextTick(function () {
+    //   this.$refs.input.focus()
+    // })
+  }
+
+  handleInputChange (e: any) {
+    this.inputValue = e.target.value
+  }
+
+  handleInputConfirm () {
+    const inputValue = this.inputValue
+    let tags = this.tags
+    if (inputValue && tags.indexOf(inputValue) === -1) {
+      tags = [...tags, inputValue]
+    }
+    console.log(tags)
+    Object.assign(this, {
+      tags,
+      inputVisible: false,
+      inputValue: ''
+    })
+  }
 
   get fullImage () {
     return this.game.images.find(it => it.type === 'F')?.url || EMPTY_GAME.imageFullSize
