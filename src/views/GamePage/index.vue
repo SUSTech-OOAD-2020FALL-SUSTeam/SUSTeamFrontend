@@ -200,8 +200,8 @@ import { gameDetail } from '@/api/Game'
 import { CommentCard, ImageGallery } from '@/views/GamePage/components'
 import { EMPTY_GAME } from '@/typings/GameProfile'
 import VueMarkdown from 'vue-markdown'
-import { Comment, EMPTY_COMMENT } from '@/typings/Comment'
-import { createComment, gameComments, updateComment } from '@/api/Comment'
+import { Comment, CommentThumb, CommentWithThumb, EMPTY_COMMENT, ThumbSummary } from '@/typings/Comment'
+import { createComment, gameComments, gameCommentThumbs, updateComment } from '@/api/Comment'
 import { UserStore } from '@/store/modules/UserStoreModule'
 import { Watch } from 'vue-property-decorator'
 import { Announcement } from '@/typings/Announcement'
@@ -213,6 +213,8 @@ export default class GamePage extends Vue {
   game: GameDetail = EMPTY_GAME_DETAIL
 
   comments: Array<Comment> = []
+  commentThumbs: Array<CommentThumb> = []
+  thumbSummary: Array<ThumbSummary> = []
   announcements: Array<Announcement> = []
 
   showAllComment = false
@@ -252,12 +254,26 @@ export default class GamePage extends Vue {
     return this.game.images.find(it => it.type === 'F')?.url || EMPTY_GAME.imageFullSize
   }
 
+  get commentWithThumb () {
+    const list: Array<CommentWithThumb> = this.comments.map(comment => {
+      const vote = this.commentThumbs.find(it => it.commenter === comment.username)?.vote || 0
+      const summary = this.thumbSummary.find(it => it.commenter === comment.username) || {
+        commenter: comment.username,
+        upvote: 0,
+        downvote: 0
+      }
+      return {
+        ...comment,
+        vote,
+        thumbSummary: summary
+      }
+    })
+    return list
+  }
+
   get filledComment () {
-    if (this.comments.length < 3) {
-      return [...this.comments, EMPTY_COMMENT]
-    } else {
-      return this.comments
-    }
+    const comments = this.commentWithThumb
+    return comments.length < 3 ? [...comments, { ...EMPTY_COMMENT, vote: 0 }] : comments
   }
 
   get averageScore () {
@@ -306,6 +322,9 @@ export default class GamePage extends Vue {
       return
     }
     this.comments = await gameComments(gameId)
+    const thumbs = await gameCommentThumbs(gameId)
+    this.commentThumbs = thumbs.commentThumbs
+    this.thumbSummary = thumbs.thumbSummary
     await this.loadUserComment()
   }
 
