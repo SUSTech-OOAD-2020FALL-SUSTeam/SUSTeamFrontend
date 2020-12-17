@@ -55,7 +55,6 @@ export default class DiscountEdit extends Vue {
 
   newDiscount: Discount = {
     gameId: 1,
-    type: 1,
     percentage: 10,
     startTime: new Date(),
     endTime: new Date()

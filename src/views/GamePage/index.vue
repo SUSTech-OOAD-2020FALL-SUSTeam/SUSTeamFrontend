@@ -22,8 +22,30 @@
             {{ game.introduction }}
           </div>
           <div class="purchase-box">
-            <div class="purchase-price">
+            <div
+              v-if="game.discount === null"
+              class="purchase-price"
+            >
               ${{ game.price }}
+            </div>
+            <div v-else>
+              <div class="purchase-box">
+                <a-space size="middle">
+                  <div class="purchase-price">
+                    <s>
+                      ${{ game.price }}
+                    </s>
+                  </div>
+                  <div class="new-price">
+                    ${{ Math.round( game.price * game.discount.percentage * 100 + Number.EPSILON ) / 100 }}
+                  </div>
+                </a-space>
+              </div>
+              <a-statistic-countdown
+                title="距离优惠结束还有"
+                format="D 天 H 时 m 分 s 秒"
+                :value="deadline"
+              />
             </div>
             <a-button
               type="primary"
@@ -201,6 +223,8 @@ export default class GamePage extends Vue {
   commentInput = ''
   commentScore = 0
 
+  deadline: Date | null = null
+
   mounted () {
     const gameId = this.gameId
     if (gameId === undefined) {
@@ -210,6 +234,7 @@ export default class GamePage extends Vue {
     gameDetail(gameId)
       .then(it => {
         this.game = it
+        this.deadline = this.game.discount?.endTime || null
       })
       .catch(() => {
         this.$message.error('Game not exist!')
@@ -362,6 +387,12 @@ export default class GamePage extends Vue {
 .purchase-price {
   font-size: 1.125em;
   margin-bottom: 1rem;
+}
+
+.new-price {
+  font-size: 1.5em;
+  color: aquamarine;
+  margin-top: -1rem;
 }
 
 .purchase-button {
@@ -581,6 +612,20 @@ export default class GamePage extends Vue {
 @media (max-width: 768px) {
   .game-post-comment-button {
     width: 100%;
+  }
+}
+
+.purchase-box /deep/ .ant-statistic {
+  .ant-statistic-title {
+    color: $primary-text;
+    font-size: 16px;
+    text-align: end;
+    margin-bottom: -5px;
+  }
+
+  .ant-statistic-content-value {
+    color: $primary-text;
+    font-size: 20px;
   }
 }
 

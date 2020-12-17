@@ -241,7 +241,6 @@ export default class DevGameEdit extends Vue {
 
   discounts: Array<Discount> = [{
     gameId: 1,
-    type: 1,
     percentage: 10,
     startTime: new Date(),
     endTime: new Date()
