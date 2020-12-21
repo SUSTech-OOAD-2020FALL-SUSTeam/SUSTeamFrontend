@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import request from '@/utils/Request'
 import { GameProfile, parseGameProfile } from '@/typings/GameProfile'
 

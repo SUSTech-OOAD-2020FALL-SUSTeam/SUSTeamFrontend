@@ -48,11 +48,19 @@
               />
             </div>
             <a-button
+              v-if="!purchased"
               type="primary"
               class="purchase-button"
               @click="$router.push(`/game/${gameId}/purchase`)"
             >
               立即购买
+            </a-button>
+            <a-button
+              v-else
+              class="purchase-button"
+              disabled
+            >
+              已购买
             </a-button>
           </div>
         </div>
@@ -207,6 +215,7 @@ import { Watch } from 'vue-property-decorator'
 import { Announcement } from '@/typings/Announcement'
 import { gameAnnouncements } from '@/api/Announcement'
 import PageNavigation from '@/components/PageNavigation/index.vue'
+import { games } from '@/api/Order'
 
 @Component({ components: { PageNavigation, ImageGallery, CommentCard, VueMarkdown } })
 export default class GamePage extends Vue {
@@ -225,6 +234,8 @@ export default class GamePage extends Vue {
   commentInput = ''
   commentScore = 0
 
+  purchased = false
+
   deadline: Date | null = null
 
   mounted () {
@@ -237,6 +248,12 @@ export default class GamePage extends Vue {
       .then(it => {
         this.game = it
         this.deadline = this.game.discount?.endTime || null
+        if (UserStore.user !== null) {
+          games(UserStore.user.username).then(games => {
+            this.purchased = games.map(game => game.gameId)
+              .includes(gameId)
+          })
+        }
       })
       .catch(() => {
         this.$message.error('Game not exist!')
