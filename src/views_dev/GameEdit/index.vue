@@ -74,7 +74,7 @@
 
     <div class="content-container">
       <div class="content-card">
-        <DiscountEdit :discounts="discounts" />
+        <DiscountEdit />
       </div>
     </div>
 
@@ -172,7 +172,7 @@
 
     <div class="content-container">
       <div class="content-card">
-        <AnnouncementEdit :announcements="announcements" />
+        <AnnouncementEdit />
       </div>
     </div>
 
@@ -229,7 +229,7 @@ import Component from 'vue-class-component'
 import { EMPTY_GAME_DETAIL, GameDetail } from '@/typings/GameDetail'
 import { gameDetail } from '@/api/Game'
 import { EMPTY_GAME } from '@/typings/GameProfile'
-import { announcements, updateGame } from '@/api/Developer'
+import { announcements, updateGame, discounts } from '@/api/Developer'
 import DiscountEdit from '@/views_dev/components/DiscountEdit.vue'
 import { Discount } from '@/typings/Discount'
 import AnnouncementEdit from '@/views_dev/components/AnnouncementEdit.vue'
@@ -323,6 +323,7 @@ export default class DevGameEdit extends Vue {
     this.basicInfo.introduction = game.introduction
     this.basicInfo.description = game.description
     this.announcements = await announcements(gameId)
+    this.discounts = await discounts(gameId)
   }
 
   async updateBasicInfo () {

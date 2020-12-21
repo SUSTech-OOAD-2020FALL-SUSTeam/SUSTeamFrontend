@@ -47,15 +47,14 @@
 
 <script lang="ts">
 
-import { Component, Prop } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
 import Vue from 'vue'
 import { Announcement } from '@/typings/Announcement'
 import { announcements, addAnnouncement } from '@/api/Developer'
 
 @Component
 export default class AnnouncementEdit extends Vue {
-  @Prop()
-  announcements!: Array<Announcement>
+  announcements: Array<Announcement> = []
 
   newAnnouncement: Announcement = {
     gameId: this.gameId,
@@ -68,9 +67,17 @@ export default class AnnouncementEdit extends Vue {
     return parseInt(this.$route.params.gameId)
   }
 
+  async mounted () {
+    this.announcements = await this.getAnnouncements()
+  }
+
   async addAnnouncement () {
     await addAnnouncement(this.newAnnouncement)
-    this.announcements = await announcements(this.gameId)
+    this.announcements = await this.getAnnouncements()
+  }
+
+  private async getAnnouncements () {
+    return await announcements(this.gameId)
   }
 }
 </script>

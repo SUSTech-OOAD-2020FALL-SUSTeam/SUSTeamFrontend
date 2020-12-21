@@ -9,7 +9,7 @@
           slot="percentage"
           slot-scope="percentage"
         >
-          {{ percentage + '%' }}
+          {{ percentage * 100 + '%' }}
         </span>
         <span
           slot="date"
@@ -44,17 +44,17 @@
 
 <script lang="ts">
 
-import { Component, Prop } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
 import Vue from 'vue'
 import { Discount } from '@/typings/Discount'
+import { discounts, addDiscount } from '@/api/Developer'
 
 @Component
 export default class DiscountEdit extends Vue {
-  @Prop()
-  discounts!: Array<Discount>
+  discounts: Array<Discount> = []
 
   newDiscount: Discount = {
-    gameId: 1,
+    gameId: this.gameId,
     percentage: 10,
     startTime: new Date(),
     endTime: new Date()
@@ -82,8 +82,23 @@ export default class DiscountEdit extends Vue {
     }
   ]
 
-  addDiscount () {
-    this.discounts.push({ ...this.newDiscount })
+  async mounted () {
+    this.discounts = await this.loadDiscounts()
+  }
+
+  private async loadDiscounts () {
+    return await discounts(this.gameId)
+  }
+
+  get gameId () {
+    return parseInt(this.$route.params.gameId)
+  }
+
+  async addDiscount () {
+    const uploadedDiscount = { ...this.newDiscount }
+    uploadedDiscount.percentage /= 100
+    await addDiscount(uploadedDiscount)
+    this.discounts = await this.loadDiscounts()
   }
 
   selectDiscountRange (date: [moment.Moment, moment.Moment], dateString: [string, string]) {
