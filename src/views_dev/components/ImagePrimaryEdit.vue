@@ -15,6 +15,7 @@
           >
           <a-upload
             :before-upload="uploadFullSizeImage"
+            :show-upload-list="false"
           >
             <a-button>
               <a-icon type="upload" />
@@ -33,6 +34,7 @@
           >
           <a-upload
             :before-upload="uploadCardSizeImage"
+            :show-upload-list="false"
           >
             <a-button>
               <a-icon type="upload" />
@@ -51,6 +53,8 @@ import { Component, Prop } from 'vue-property-decorator'
 import Vue from 'vue'
 import { EMPTY_GAME_DETAIL, GameDetail } from '@/typings/GameDetail'
 import { EMPTY_GAME } from '@/typings/GameProfile'
+import { uploadGameImage } from '@/api/Game'
+import DevGameEdit from '@/views_dev/GameEdit/index.vue'
 
 @Component
 export default class ImagePrimaryEdit extends Vue {
@@ -65,15 +69,15 @@ export default class ImagePrimaryEdit extends Vue {
     return this.game.images.find(it => it.type === 'C')?.url || EMPTY_GAME.imageCardSize
   }
 
-  uploadFullSizeImage (file: any) {
-    // TODO
-    console.log(file)
+  async uploadFullSizeImage (file: File) {
+    await uploadGameImage(this.game.gameId, file, 'FullSize')
+    await (this.$parent as DevGameEdit).loadGame()
     return false
   }
 
-  uploadCardSizeImage (file: any) {
-    // TODO
-    console.log(file)
+  async uploadCardSizeImage (file: File) {
+    await uploadGameImage(this.game.gameId, file, 'CardSize')
+    await (this.$parent as DevGameEdit).loadGame()
     return false
   }
 }

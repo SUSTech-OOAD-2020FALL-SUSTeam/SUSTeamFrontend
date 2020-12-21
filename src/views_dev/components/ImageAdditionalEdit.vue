@@ -21,6 +21,7 @@
 
       <a-upload
         :before-upload="uploadGameImage"
+        :show-upload-list="false"
       >
         <a-button>
           <a-icon type="upload" />
@@ -36,6 +37,8 @@
 import { Component, Prop } from 'vue-property-decorator'
 import Vue from 'vue'
 import { EMPTY_GAME_DETAIL, GameDetail } from '@/typings/GameDetail'
+import { uploadGameImage } from '@/api/Game'
+import DevGameEdit from '@/views_dev/GameEdit/index.vue'
 
 @Component
 export default class ImageAdditionalEdit extends Vue {
@@ -46,9 +49,9 @@ export default class ImageAdditionalEdit extends Vue {
     return this.game.images.filter(it => it.type !== 'F' && it.type !== 'C')
   }
 
-  uploadGameImage (file: any) {
-    // TODO
-    console.log(file)
+  async uploadGameImage (file: File) {
+    await uploadGameImage(this.game.gameId, file)
+    await (this.$parent as DevGameEdit).loadGame()
     return false
   }
 }
