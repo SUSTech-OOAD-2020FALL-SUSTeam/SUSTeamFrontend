@@ -21,3 +21,13 @@ export async function token (): Promise<UserRole> {
 export async function signup (username: string, password: string, mail: string): Promise<any> {
   await request.post('/user', { username, password, mail })
 }
+
+export async function uploadAvatar (username: string, file: File): Promise<void> {
+  const form = new FormData()
+  form.append('file', file)
+  return await request.put(`/user/${encodeURIComponent(username)}/avatar`, form)
+}
+
+export async function updateDescription (username: string, description: string): Promise<void> {
+  return await request.put(`/user/${encodeURIComponent(username)}`, { description })
+}

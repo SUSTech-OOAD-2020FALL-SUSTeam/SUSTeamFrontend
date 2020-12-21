@@ -14,10 +14,20 @@
             align="start"
             size="large"
           >
-            <a-avatar
-              :size="96"
-              :src="user.avatar"
-            />
+            <div class="avatar-box">
+              <a-avatar
+                :size="96"
+                :src="user.avatar"
+              />
+              <a-upload
+                :before-upload="uploadAvatar"
+                :show-upload-list="false"
+              >
+                <span class="upload-avatar-button">
+                  Upload Avatar
+                </span>
+              </a-upload>
+            </div>
             <div>
               <div class="username user-profile-entry">
                 {{ user.username }}
@@ -30,13 +40,36 @@
               </div>
               <div class="user-profile-entry">
                 介绍：
+                <span
+                  class="edit-button"
+                  @click="startEdit"
+                >
+                  编辑
+                </span>
               </div>
               <a-card
+                v-if="edit === false"
                 class="user-description"
                 type="inner"
                 :body-style="{'text-align': 'left', 'padding': '5px'}"
               >
                 {{ user.description }}
+              </a-card>
+              <a-card
+                v-else
+                class="user-description"
+              >
+                <a-textarea
+                  v-model="description"
+                  style="width: 100%"
+                />
+                <a-button
+                  type="primary"
+                  style="margin-top: 1em"
+                  @click="updateDescription"
+                >
+                  更新
+                </a-button>
               </a-card>
             </div>
           </a-space>
@@ -81,10 +114,14 @@ import { UserStore } from '@/store/modules/UserStoreModule'
 import { GameProfile } from '@/typings/GameProfile'
 import { games } from '@/api/Order'
 import { EMPTY_USER } from '@/typings/User'
+import { uploadAvatar, updateDescription } from '@/api/User'
 
 @Component({ components: { GameCard } })
 export default class PersonalProfile extends Vue {
   purchasedGames: Array<GameProfile> = []
+
+  edit = false
+  description = ''
 
   get user () {
     const dispUser = UserStore.user || EMPTY_USER
@@ -92,6 +129,23 @@ export default class PersonalProfile extends Vue {
       this.purchasedGames = it
     })
     return dispUser
+  }
+
+  async uploadAvatar (file: File) {
+    await uploadAvatar(this.user.username, file)
+    this.$message.success('Upload success!')
+    await UserStore.update()
+  }
+
+  async updateDescription () {
+    await updateDescription(this.user.username, this.description)
+    this.$message.success('Update success!')
+    await UserStore.update()
+  }
+
+  startEdit () {
+    this.edit = true
+    this.description = this.user.description
   }
 }
 </script>
@@ -119,6 +173,24 @@ export default class PersonalProfile extends Vue {
 
   .ant-card-head-title {
     color: $primary-text;
+  }
+
+  .avatar-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .upload-avatar-button {
+    display: inline-block;
+    margin-top: 0.75em;
+    color: $primary-color;
+    cursor: pointer;
+  }
+
+  .edit-button {
+    color: $primary-color;
+    cursor: pointer;
   }
 
   .user-card {
