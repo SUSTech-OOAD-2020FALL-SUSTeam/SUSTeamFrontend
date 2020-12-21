@@ -29,7 +29,6 @@ export function parseGameImage (object: any): GameImage {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseGameDetail (object: any): GameDetail {
-  console.log(object)
   return {
     gameId: object.gameId,
     name: object.name,

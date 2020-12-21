@@ -44,3 +44,12 @@ export async function getGameKey (gameId: number): Promise<string> {
   const data: any = await request.get(`/key/${gameId}`)
   return data.key
 }
+
+export async function tags (gameId: number): Promise<Array<string>> {
+  const data: any = await request.get(`/game/${gameId}/tags`)
+  return data.tags
+}
+
+export async function addTag (gameId: number, tag: string): Promise<void> {
+  return await request.post(`/game/${gameId}/tag`, { tag: tag })
+}

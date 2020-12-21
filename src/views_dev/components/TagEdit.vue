@@ -39,16 +39,24 @@
 import { Component, Prop } from 'vue-property-decorator'
 import Vue from 'vue'
 import { EMPTY_GAME_DETAIL, GameDetail } from '@/typings/GameDetail'
-import { EMPTY_GAME } from '@/typings/GameProfile'
+import { addTag, tags } from '@/api/Developer'
 
 @Component
 export default class TagEdit extends Vue {
   @Prop()
   game: GameDetail = EMPTY_GAME_DETAIL
 
-  tags = ['Unremovable', 'Tag 2', '现在这里是假的标签']
+  tags: Array<string> = []
   inputVisible = false
   inputValue = ''
+
+  get gameId () {
+    return parseInt(this.$route.params.gameId)
+  }
+
+  async mounted () {
+    this.tags = await this.getTags()
+  }
 
   handleClose (removedTag: string) {
     const tags = this.tags.filter(tag => tag !== removedTag)
@@ -67,18 +75,34 @@ export default class TagEdit extends Vue {
     this.inputValue = e.target.value
   }
 
-  handleInputConfirm () {
-    const inputValue = this.inputValue
-    let tags = this.tags
-    if (inputValue && tags.indexOf(inputValue) === -1) {
-      tags = [...tags, inputValue]
-    }
-    console.log(tags)
+  async handleInputConfirm () {
+    const inputValue: string = this.inputValue
+    console.log(inputValue)
+    await addTag(this.gameId, inputValue)
     Object.assign(this, {
-      tags,
+      tags: await this.getTags(),
       inputVisible: false,
       inputValue: ''
     })
+    this.$message.info('添加成功')
+    /*
+    addTag(this.gameId, inputValue).then(async () => {
+      Object.assign(this, {
+        tags: await this.getTags(),
+        inputVisible: false,
+        inputValue: ''
+      })
+      this.$message.info('添加成功')
+    }).catch(err => {
+      this.$message.error(err)
+      this.inputVisible = false
+      this.inputValue = ''
+    })
+    */
+  }
+
+  private async getTags () {
+    return await tags(this.gameId)
   }
 }
 </script>
