@@ -61,7 +61,7 @@ import { Component, Prop, Watch } from 'vue-property-decorator'
 import Vue from 'vue'
 import { updateGame } from '@/api/Developer'
 import { EMPTY_GAME_DETAIL, GameDetail } from '@/typings/GameDetail'
-import DevGameEdit from '@/views_dev/GameEdit'
+import DevGameEdit from '@/views_dev/GameEdit/index.vue'
 
 @Component
 export default class BasicInfoEdit extends Vue {

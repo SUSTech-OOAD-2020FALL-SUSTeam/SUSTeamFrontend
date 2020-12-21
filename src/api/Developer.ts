@@ -39,3 +39,8 @@ export async function addDiscount (discount: Discount): Promise<void> {
   const uploads = { ...discount }
   return await request.post(`/discount/${discount.gameId}`, uploads)
 }
+
+export async function getGameKey (gameId: number): Promise<string> {
+  const data: any = await request.get(`/key/${gameId}`)
+  return data.key
+}

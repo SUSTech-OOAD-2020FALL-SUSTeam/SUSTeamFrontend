@@ -11,6 +11,11 @@
     </div>
     <div class="content-container">
       <div class="content-card">
+        <GameKeyDisplay />
+      </div>
+    </div>
+    <div class="content-container">
+      <div class="content-card">
         <BasicInfoEdit :game="game" />
       </div>
     </div>
@@ -75,12 +80,10 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { EMPTY_GAME_DETAIL, GameDetail } from '@/typings/GameDetail'
 import { gameDetail } from '@/api/Game'
-import { announcements, discounts } from '@/api/Developer'
 import DiscountEdit from '@/views_dev/components/DiscountEdit.vue'
-import { Discount } from '@/typings/Discount'
 import AnnouncementEdit from '@/views_dev/components/AnnouncementEdit.vue'
-import { Announcement } from '@/typings/Announcement'
 import BasicInfoEdit from '@/views_dev/components/BasicInfoEdit.vue'
+import GameKeyDisplay from '@/views_dev/components/GameKeyDisplay.vue'
 import ImagePrimaryEdit from '@/views_dev/components/ImagePrimaryEdit.vue'
 import ImageAdditionalEdit from '@/views_dev/components/ImageAdditionalEdit.vue'
 import TagEdit from '@/views_dev/components/TagEdit.vue'
@@ -88,6 +91,7 @@ import TagEdit from '@/views_dev/components/TagEdit.vue'
 @Component({
   components: {
     BasicInfoEdit,
+    GameKeyDisplay,
     ImagePrimaryEdit,
     ImageAdditionalEdit,
     AnnouncementEdit,
@@ -97,15 +101,6 @@ import TagEdit from '@/views_dev/components/TagEdit.vue'
 })
 export default class DevGameEdit extends Vue {
   game: GameDetail = EMPTY_GAME_DETAIL
-
-  discounts: Array<Discount> = [{
-    gameId: 1,
-    percentage: 10,
-    startTime: new Date(),
-    endTime: new Date()
-  }]
-
-  announcements: Array<Announcement> = []
 
   get gameId () {
     const id = parseInt(this.$route.params.gameId)
@@ -122,8 +117,6 @@ export default class DevGameEdit extends Vue {
       return
     }
     this.game = await gameDetail(gameId)
-    this.announcements = await announcements(gameId)
-    this.discounts = await discounts(gameId)
   }
 }
 
