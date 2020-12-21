@@ -85,20 +85,6 @@ export default class TagEdit extends Vue {
       inputValue: ''
     })
     this.$message.info('添加成功')
-    /*
-    addTag(this.gameId, inputValue).then(async () => {
-      Object.assign(this, {
-        tags: await this.getTags(),
-        inputVisible: false,
-        inputValue: ''
-      })
-      this.$message.info('添加成功')
-    }).catch(err => {
-      this.$message.error(err)
-      this.inputVisible = false
-      this.inputValue = ''
-    })
-    */
   }
 
   private async getTags () {

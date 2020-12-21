@@ -1,6 +1,7 @@
 import axios from 'axios'
 import * as config from './Config'
 import { getToken } from '@/utils/Auth'
+import { message } from 'ant-design-vue'
 
 const request = axios.create({
   baseURL: `${config.HOST}${config.API_BASE}`,
@@ -30,6 +31,7 @@ request.interceptors.response.use(
   },
   error => {
     if (error?.response?.data?.success === false) {
+      message.error(error.response.data.error)
       return Promise.reject(error.response.data.error)
     }
     return Promise.reject(error)
