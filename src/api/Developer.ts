@@ -53,3 +53,14 @@ export async function tags (gameId: number): Promise<Array<string>> {
 export async function addTag (gameId: number, tag: string): Promise<void> {
   return await request.post(`/game/${gameId}/tag`, { tag: tag })
 }
+
+export async function createGame (
+  game: {
+    name: string;
+    price: number;
+    introduction: string | null;
+    description: string | null;
+  }
+): Promise<void> {
+  return await request.post('/game', game)
+}
