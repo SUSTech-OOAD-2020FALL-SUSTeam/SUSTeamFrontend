@@ -118,7 +118,7 @@ export default class PersonalProfile extends Vue {
   .list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
 
   .ant-card-head-title {
@@ -155,6 +155,7 @@ export default class PersonalProfile extends Vue {
   .game-card-wrapper {
     box-sizing: border-box;
     width: calc((100% - (2 - 1) * 1.2em) / 2);
+    margin-right: 1.2em;
   }
 
   @media (max-width: 1024px) {
