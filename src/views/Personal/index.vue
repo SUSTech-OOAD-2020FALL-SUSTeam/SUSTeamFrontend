@@ -1,6 +1,5 @@
 <template>
   <main class="home dark">
-    <Navigation />
     <div class="page-container">
       <div class="title">
         账户信息
@@ -8,7 +7,7 @@
       <a-card
         class="user-card"
         title="我的SUSTeam名片"
-        :head-style="{color: '$primary-text'}"
+        :head-style="{color: '#fff'}"
       >
         <div>
           <a-space
@@ -19,7 +18,7 @@
               :size="96"
               :src="user.avatar"
             />
-            <span>
+            <div>
               <div class="username user-profile-entry">
                 {{ user.username }}
               </div>
@@ -39,7 +38,7 @@
               >
                 {{ user.description }}
               </a-card>
-            </span>
+            </div>
           </a-space>
         </div>
       </a-card>
@@ -71,22 +70,19 @@
         暂无
       </div>
     </div>
-    <PageFooter />
   </main>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import Navigation from '@/components/Navigation.vue'
 import GameCard from '@/components/GameCard.vue'
-import PageFooter from '@/components/PageFooter.vue'
 import { UserStore } from '@/store/modules/UserStoreModule'
 import { GameProfile } from '@/typings/GameProfile'
 import { games } from '@/api/Order'
 import { EMPTY_USER } from '@/typings/User'
 
-@Component({ components: { Navigation, GameCard, PageFooter } })
+@Component({ components: { GameCard } })
 export default class PersonalProfile extends Vue {
   purchasedGames: Array<GameProfile> = []
 
@@ -154,15 +150,15 @@ export default class PersonalProfile extends Vue {
 
   .game-card-wrapper {
     box-sizing: border-box;
-    width: calc((100% - (2 - 1) * 1.2em) / 2);
     margin-right: 1.2em;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 768px) {
     .game-card-wrapper {
-      &:last-child {
-        display: none;
-      }
+      width: calc((100% - (2 - 1) * 1.2em) / 2);
+    }
+    .game-card-wrapper:nth-child(2n) {
+      margin-right: 0;
     }
   }
 
@@ -170,11 +166,17 @@ export default class PersonalProfile extends Vue {
     .game-card-wrapper {
       width: calc((100% - (4 - 1) * 1.2em) / 4);
     }
+    .game-card-wrapper:nth-child(4n) {
+      margin-right: 0;
+    }
   }
 
   @media (min-width: 1024px) {
     .game-card-wrapper {
       width: calc((100% - (5 - 1) * 1.2em) / 5);
+    }
+    .game-card-wrapper:nth-child(5n) {
+      margin-right: 0;
     }
   }
 </style>

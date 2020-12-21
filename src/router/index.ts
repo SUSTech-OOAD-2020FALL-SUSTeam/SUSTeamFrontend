@@ -31,11 +31,6 @@ const routes: Array<RouteConfig> = [
     component: Signup
   },
   {
-    path: '/account/personal',
-    name: 'Personal Profile',
-    component: PersonalProfile
-  },
-  {
     path: '/dev',
     name: 'DevPanel',
     component: DevPanel,
@@ -95,6 +90,11 @@ const routes: Array<RouteConfig> = [
         path: '/game/:gameId/purchase',
         name: 'Purchase',
         component: Purchase
+      },
+      {
+        path: '/account/personal',
+        name: 'Personal Profile',
+        component: PersonalProfile
       },
       {
         path: '*',
