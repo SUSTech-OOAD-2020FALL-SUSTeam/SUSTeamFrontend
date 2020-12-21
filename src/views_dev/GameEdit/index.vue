@@ -22,6 +22,18 @@
 
     <div class="content-card">
       <div class="content-title">
+        版本
+      </div>
+    </div>
+
+    <div class="content-container">
+      <div class="content-card">
+        <VersionEdit />
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="content-title">
         折扣
       </div>
     </div>
@@ -87,6 +99,7 @@ import GameKeyDisplay from '@/views_dev/components/GameKeyDisplay.vue'
 import ImagePrimaryEdit from '@/views_dev/components/ImagePrimaryEdit.vue'
 import ImageAdditionalEdit from '@/views_dev/components/ImageAdditionalEdit.vue'
 import TagEdit from '@/views_dev/components/TagEdit.vue'
+import VersionEdit from '@/views_dev/components/VersionEdit.vue'
 
 @Component({
   components: {
@@ -94,6 +107,7 @@ import TagEdit from '@/views_dev/components/TagEdit.vue'
     GameKeyDisplay,
     ImagePrimaryEdit,
     ImageAdditionalEdit,
+    VersionEdit,
     AnnouncementEdit,
     DiscountEdit,
     TagEdit
