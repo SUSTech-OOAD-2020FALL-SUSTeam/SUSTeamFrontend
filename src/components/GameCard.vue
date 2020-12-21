@@ -22,18 +22,21 @@
           v-if="game.discount === null"
           class="game-price"
         >
-          ${{ game.price }}
+          {{ game.price > 0 ? "$" + game.price : "免费" }}
         </div>
         <div
           v-else
         >
-          <a-space size="middle">
-            <div class="game-price">
+          <a-space :size="4">
+            <a-tag color="#108ee9">
+              -{{ 100 * game.discount.percentage }}%
+            </a-tag>
+            <div class="old-price">
               <s>
                 ${{ game.price }}
               </s>
             </div>
-            <div class="new-price">
+            <div class="game-price">
               ${{ Math.round( game.price * game.discount.percentage * 100 + Number.EPSILON ) / 100 }}
             </div>
           </a-space>
@@ -87,10 +90,9 @@ export default class GameCard extends Vue {
   padding: 0.5em 0;
 }
 
-.new-price {
+.old-price {
   font-size: 1.2em;
-  padding: 0.5em 0;
-  color: aquamarine;
+  opacity: 0.5;
 }
 
 </style>
