@@ -50,6 +50,7 @@
 import { Component, Prop } from 'vue-property-decorator'
 import Vue from 'vue'
 import { Announcement } from '@/typings/Announcement'
+import { announcements, addAnnouncement } from '@/api/Developer'
 
 @Component
 export default class AnnouncementEdit extends Vue {
@@ -57,14 +58,19 @@ export default class AnnouncementEdit extends Vue {
   announcements!: Array<Announcement>
 
   newAnnouncement: Announcement = {
-    gameId: 1,
+    gameId: this.gameId,
     announceTime: new Date(),
     title: '',
     content: ''
   }
 
-  addAnnouncement () {
-    this.announcements.push({ ...this.newAnnouncement })
+  get gameId () {
+    return parseInt(this.$route.params.gameId)
+  }
+
+  async addAnnouncement () {
+    await addAnnouncement(this.newAnnouncement)
+    this.announcements = await announcements(this.gameId)
   }
 }
 </script>
