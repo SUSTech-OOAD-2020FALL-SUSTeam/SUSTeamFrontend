@@ -3,6 +3,8 @@ import { IpcRenderer } from 'electron'
 import { getToken } from '@/utils/Auth'
 import { versions } from '@/api/Version'
 
+import * as config from './Config'
+
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
@@ -73,7 +75,9 @@ export async function downloadGame (gameId: number, branch: string) {
   const lastVersion = versionList[0]
   const version = lastVersion.name
 
-  const path = await downloadFile(`http://susteam.gogo.moe/api/game/${gameId}/version/${version}/download`)
+  const url = `${config.HOST}${config.API_BASE}/game/${gameId}/version/${encodeURIComponent(version)}/download`
+  const path = await downloadFile(url)
+
   const gamePath = `${gameDir}/${gameId}/${branch}`
   await fs.mkdirs(gamePath)
 
@@ -84,6 +88,52 @@ export async function downloadGame (gameId: number, branch: string) {
   }
 
   localGameStatusMap.set(gameId, branch, version)
+
+  await saveLocalGameStatus()
+}
+
+export async function upgradeGame (gameId: number, branch: string) {
+  const currentVersion = localGameStatusMap.get(gameId, branch)
+  if (currentVersion === null) {
+    await downloadGame(gameId, branch)
+    return
+  }
+
+  const versionList = await versions(gameId, branch)
+  if (versionList.length === 0) {
+    throw new Error(`No Versions of Branch ${branch}`)
+  }
+
+  const index = versionList.findIndex(it => it.name === currentVersion)
+
+  if (index <= 0) {
+    return
+  }
+
+  const gamePath = `${gameDir}/${gameId}/${branch}`
+  await fs.mkdirs(gamePath)
+
+  for (let i = index - 1; i >= 0; i--) {
+    const version = versionList[i]
+    const url = `${config.HOST}${config.API_BASE}/game/${gameId}/version/${encodeURIComponent(version.name)}/update/download`
+    const path = await downloadFile(url)
+
+    if (path.endsWith('.zip')) {
+      const extractPath = `${root}/temp/update/${gameId}`
+      await fs.mkdirs(extractPath)
+      await new Promise(resolve =>
+        fs.createReadStream(path)
+          .pipe(unzipper.Extract({ path: extractPath }))
+          .on('finish', resolve)
+      )
+      await fs.copy(extractPath, gamePath, { overwrite: true })
+      await fs.remove(extractPath)
+    } else {
+      await fs.copy(path, gamePath, { overwrite: true })
+    }
+  }
+
+  localGameStatusMap.set(gameId, branch, versionList[0].name)
 
   await saveLocalGameStatus()
 }

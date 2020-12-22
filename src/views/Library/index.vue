@@ -43,11 +43,24 @@
             下载
           </button>
           <button
-            v-else
+            v-else-if="branchesLastVersion[gameStatus.branch] === undefined"
+            class="main-button loading-button"
+          >
+            加载中
+          </button>
+          <button
+            v-else-if="gameStatus.version === branchesLastVersion[gameStatus.branch]"
             class="main-button launch-button"
             @click="launch(game.gameId, gameStatus.branch)"
           >
             启动
+          </button>
+          <button
+            v-else
+            class="main-button update-button"
+            @click="upgrade(game.gameId, gameStatus.branch)"
+          >
+            更新
           </button>
           <a-select
             class="version-select"
@@ -80,7 +93,7 @@ import { UserStore } from '@/store/modules/UserStoreModule'
 import Navigation from '@/components/Navigation.vue'
 import { GameProfile } from '@/typings/GameProfile'
 import { games } from '@/api/Order'
-import { branches } from '@/api/Version'
+import { branches, versions } from '@/api/Version'
 import { LocalGameStatus, LocalGameStatusMap } from '@/typings/LocalGameStatus'
 import * as Client from '@/utils/Client'
 
@@ -92,6 +105,7 @@ export default class Library extends Vue {
   selectedGame = -1
   selectedBranch = 'Main'
   branches: Array<string> = []
+  branchesLastVersion: Record<string, string> = {}
 
   gameStatus: LocalGameStatus = { gameId: -1, branch: 'Main', version: null }
 
@@ -124,6 +138,15 @@ export default class Library extends Vue {
       branch = this.branches[0] || ''
     }
     this.selectBranch(branch)
+
+    this.branchesLastVersion = {}
+    const promises = this.branches.map(branch =>
+      versions(gameId, branch).then(version => {
+        Vue.set(this.branchesLastVersion, branch, version[0].name)
+        return version
+      })
+    )
+    await Promise.all(promises)
   }
 
   selectBranch (branch: string) {
@@ -152,6 +175,12 @@ export default class Library extends Vue {
       this.$message.error('launch game failed!')
       console.error(err)
     }
+  }
+
+  async upgrade (gameId: number, branch: string) {
+    await Client.upgradeGame(gameId, branch)
+    this.gameStatusMap = Client.localGameStatus()
+    this.updateLocalGameStatus()
   }
 }
 
@@ -271,11 +300,27 @@ export default class Library extends Vue {
   }
 }
 
+.loading-button {
+  background: #424242;
+
+  &:hover {
+    background: lighten(#424242, 30%);
+  }
+}
+
 .launch-button {
   background: #24b648;
 
   &:hover {
     background: lighten(#24b648, 10%);
+  }
+}
+
+.update-button {
+  background: lighten($primary-color, 20%);
+
+  &:hover {
+    background: lighten($primary-color, 30%);
   }
 }
 
