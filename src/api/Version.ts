@@ -17,7 +17,14 @@ export async function versions (gameId: number, branch: string): Promise<Array<G
 export async function upload (gameId: number, file: File): Promise<string> {
   const form = new FormData()
   form.append('file', file)
-  const data: any = await request.post(`/game/${gameId}/upload`, form, { headers: { 'Content-Type': 'multipart/form-data' } })
+  const data: any = await request.post(
+    `/game/${gameId}/upload`,
+    form,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 60000
+    }
+  )
   return data.url as string
 }
 
