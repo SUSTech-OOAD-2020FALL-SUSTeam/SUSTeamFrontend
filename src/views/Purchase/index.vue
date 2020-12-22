@@ -143,6 +143,7 @@ export default class AnnouncementPage extends Vue {
       if (isSuccess) {
         await UserStore.update()
         this.$message.success('purchase success')
+        this.$router.push(`/game/${this.gameId}`)
       } else {
         this.$message.error('purchase failed')
       }
