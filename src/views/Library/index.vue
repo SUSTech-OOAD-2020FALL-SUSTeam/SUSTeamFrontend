@@ -11,8 +11,8 @@
             v-for="(game,index) in games"
             :key="`game-${index}-${game.gameId}`"
             class="game-list-item"
-            :class="{active: selectedGame === index}"
-            @click="selectedGame = index"
+            :class="{active: selectedGame === game.gameId}"
+            @click="selectGame(game.gameId)"
           >
             {{ game.name }}
           </div>
@@ -38,17 +38,29 @@
           <button
             v-if="gameStatus.version === null"
             class="main-button download-button"
-            @click="download(game.gameId)"
+            @click="download(gameStatus.gameId, gameStatus.branch)"
           >
             下载
           </button>
           <button
             v-else
             class="main-button launch-button"
-            @click="launch(game.gameId)"
+            @click="launch(game.gameId, gameStatus.branch)"
           >
             启动
           </button>
+          <a-select
+            class="version-select"
+            :value="selectedBranch"
+            @change="selectBranch"
+          >
+            <a-select-option
+              v-for="branch in branches"
+              :key="branch"
+            >
+              {{ branch }}
+            </a-select-option>
+          </a-select>
         </div>
         <div class="game-preview-box">
           <div class="game-preview-title">
@@ -68,15 +80,20 @@ import { UserStore } from '@/store/modules/UserStoreModule'
 import Navigation from '@/components/Navigation.vue'
 import { GameProfile } from '@/typings/GameProfile'
 import { games } from '@/api/Order'
-import { LocalGameStatus } from '@/typings/LocalGameStatus'
+import { branches } from '@/api/Version'
+import { LocalGameStatus, LocalGameStatusMap } from '@/typings/LocalGameStatus'
 import * as Client from '@/utils/Client'
 
 @Component({ components: { Navigation, VueMarkdown } })
 export default class Library extends Vue {
   games: Array<GameProfile> = []
-  gameStatusList: Array<LocalGameStatus> = []
+  gameStatusMap: LocalGameStatusMap = new LocalGameStatusMap()
 
   selectedGame = -1
+  selectedBranch = 'Main'
+  branches: Array<string> = []
+
+  gameStatus: LocalGameStatus = { gameId: -1, branch: 'Main', version: null }
 
   async mounted () {
     const user = this.user
@@ -84,35 +101,53 @@ export default class Library extends Vue {
       return
     }
     this.games = await games(user.username)
-    this.gameStatusList = Client.localGameStatus(this.games).map(it => it.status)
+    this.gameStatusMap = Client.localGameStatus()
   }
 
   get user () {
     return UserStore.user
   }
 
-  get game () {
+  get game (): GameProfile | null {
     if (this.selectedGame !== -1) {
-      return this.games[this.selectedGame]
+      return this.games.find(it => it.gameId === this.selectedGame) || null
     }
     return null
   }
 
-  get gameStatus () {
-    if (this.selectedGame !== -1) {
-      return this.gameStatusList[this.selectedGame]
+  async selectGame (gameId: number) {
+    this.selectedGame = gameId
+    this.branches = await branches(gameId)
+
+    let branch = 'Main'
+    if (!this.branches.includes('Main')) {
+      branch = this.branches[0] || ''
     }
-    return null
+    this.selectBranch(branch)
   }
 
-  async download (gameId: number) {
-    await Client.downloadGame(gameId)
-    this.gameStatusList = Client.localGameStatus(this.games).map(it => it.status)
+  selectBranch (branch: string) {
+    this.selectedBranch = branch
+    this.updateLocalGameStatus()
   }
 
-  async launch (gameId: number) {
+  updateLocalGameStatus () {
+    this.gameStatus = {
+      gameId: this.selectedGame,
+      branch: this.selectedBranch,
+      version: this.gameStatusMap.get(this.selectedGame, this.selectedBranch)
+    }
+  }
+
+  async download (gameId: number, branch: string) {
+    await Client.downloadGame(gameId, branch)
+    this.gameStatusMap = Client.localGameStatus()
+    this.updateLocalGameStatus()
+  }
+
+  async launch (gameId: number, branch: string) {
     try {
-      await Client.launchGame(gameId)
+      await Client.launchGame(gameId, branch)
     } catch (err) {
       this.$message.error('launch game failed!')
       console.error(err)
@@ -230,6 +265,7 @@ export default class Library extends Vue {
 
 .download-button {
   background: lighten($primary-color, 20%);
+
   &:hover {
     background: lighten($primary-color, 30%);
   }
@@ -237,9 +273,15 @@ export default class Library extends Vue {
 
 .launch-button {
   background: #24b648;
+
   &:hover {
     background: lighten(#24b648, 10%);
   }
+}
+
+.version-select {
+  width: 120px;
+  margin-left: 2em;
 }
 
 .game-preview-box {

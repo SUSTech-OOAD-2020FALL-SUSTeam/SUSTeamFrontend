@@ -1,7 +1,7 @@
-import { LocalGameStatus } from '@/typings/LocalGameStatus'
-import { GameProfile } from '@/typings/GameProfile'
+import { LocalGameStatus, LocalGameStatusMap } from '@/typings/LocalGameStatus'
 import { IpcRenderer } from 'electron'
 import { getToken } from '@/utils/Auth'
+import { versions } from '@/api/Version'
 
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -20,33 +20,28 @@ const root = `${appData}/susteam`
 const tempDir = `${root}/temp`
 const gameDir = `${root}/game`
 
-let localGameStatusList: Array<LocalGameStatus> = []
+const localGameStatusMap: LocalGameStatusMap = new LocalGameStatusMap()
 
 export async function loadLocalGameStatus () {
   try {
     const readFile = await fs.readJson(`${root}/game_status.json`, { throws: false })
-    localGameStatusList = readFile as Array<LocalGameStatus>
+    const localGameStatusList = readFile as Array<LocalGameStatus>
+    localGameStatusMap.merge(localGameStatusList)
   } catch (err) {
     console.error('read game_status.json failed')
     console.error(err)
-    localGameStatusList = []
   }
 }
 
 export async function saveLocalGameStatus () {
-  await fs.writeJson(`${root}/game_status.json`, localGameStatusList)
+  await fs.writeJson(`${root}/game_status.json`, localGameStatusMap.toList())
 }
 
-export function localGameStatus (games: Array<GameProfile>): Array<{ game: GameProfile; status: LocalGameStatus }> {
-  return games.map(game => {
-    return {
-      game: game,
-      status: localGameStatusList.find(it => it.gameId === game.gameId) || { gameId: game.gameId, version: null }
-    }
-  })
+export function localGameStatus (): LocalGameStatusMap {
+  return localGameStatusMap
 }
 
-const downloadTasks: { [key: number]: {resolve: (value?: any) => void;reject: (reason?: any) => void} } = {}
+const downloadTasks: { [key: number]: { resolve: (value?: any) => void; reject: (reason?: any) => void } } = {}
 
 export async function downloadFile (url: string): Promise<string> {
   const id = Math.floor(Math.random() * 100000)
@@ -60,19 +55,26 @@ export async function downloadFile (url: string): Promise<string> {
   })
 }
 
-ipcRenderer.on('downloadEnd', (event, args: {id: number; path: string}) => {
+ipcRenderer.on('downloadEnd', (event, args: { id: number; path: string }) => {
   downloadTasks[args.id].resolve(args.path)
   delete downloadTasks[args.id]
 })
 
-ipcRenderer.on('downloadError', (event, args: {id: number; error: any}) => {
+ipcRenderer.on('downloadError', (event, args: { id: number; error: any }) => {
   downloadTasks[args.id].reject(args.error)
   delete downloadTasks[args.id]
 })
 
-export async function downloadGame (gameId: number) {
-  const path = await downloadFile(`http://susteam.gogo.moe/api/game/${gameId}/version/v1.0/download`)
-  const gamePath = `${gameDir}/${gameId}`
+export async function downloadGame (gameId: number, branch: string) {
+  const versionList = await versions(gameId, branch)
+  if (versionList.length === 0) {
+    throw new Error(`No Versions of Branch ${branch}`)
+  }
+  const lastVersion = versionList[0]
+  const version = lastVersion.name
+
+  const path = await downloadFile(`http://susteam.gogo.moe/api/game/${gameId}/version/${version}/download`)
+  const gamePath = `${gameDir}/${gameId}/${branch}`
   await fs.mkdirs(gamePath)
 
   if (path.endsWith('.zip')) {
@@ -81,18 +83,13 @@ export async function downloadGame (gameId: number) {
     await fs.copy(path, gamePath)
   }
 
-  const game = localGameStatusList.find(it => it.gameId === gameId)
-  if (game) {
-    game.version = 'v1.0'
-  } else {
-    localGameStatusList.push({ gameId: gameId, version: 'v1.0' })
-  }
+  localGameStatusMap.set(gameId, branch, version)
 
   await saveLocalGameStatus()
 }
 
-export async function launchGame (gameId: number) {
-  const gamePath = `${gameDir}/${gameId}`
+export async function launchGame (gameId: number, branch: string) {
+  const gamePath = `${gameDir}/${gameId}/${branch}`
 
   let launchFile: string
   if (os.type().toLowerCase().includes('windows')) {
