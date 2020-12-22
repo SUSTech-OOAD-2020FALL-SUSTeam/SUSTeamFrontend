@@ -1,80 +1,10 @@
 <template>
   <main class="home dark">
     <div class="page-container">
-      <div class="title">
-        账户信息
-      </div>
-      <a-card
-        class="user-card"
-        title="我的SUSTeam名片"
-        :head-style="{color: '#fff'}"
-      >
-        <div>
-          <a-space
-            align="start"
-            size="large"
-          >
-            <div class="avatar-box">
-              <a-avatar
-                :size="96"
-                :src="user.avatar"
-              />
-              <a-upload
-                :before-upload="uploadAvatar"
-                :show-upload-list="false"
-              >
-                <span class="upload-avatar-button">
-                  Upload Avatar
-                </span>
-              </a-upload>
-            </div>
-            <div>
-              <div class="username user-profile-entry">
-                {{ user.username }}
-              </div>
-              <div class="email user-profile-entry">
-                {{ user.mail }}
-              </div>
-              <div class="user-profile-entry">
-                余额：${{ user.balance }}
-              </div>
-              <div class="user-profile-entry">
-                介绍：
-                <span
-                  class="edit-button"
-                  @click="startEdit"
-                >
-                  编辑
-                </span>
-              </div>
-              <a-card
-                v-if="edit === false"
-                class="user-description"
-                type="inner"
-                :body-style="{'text-align': 'left', 'padding': '5px'}"
-              >
-                {{ user.description }}
-              </a-card>
-              <a-card
-                v-else
-                class="user-description"
-              >
-                <a-textarea
-                  v-model="description"
-                  style="width: 100%"
-                />
-                <a-button
-                  type="primary"
-                  style="margin-top: 1em"
-                  @click="updateDescription"
-                >
-                  更新
-                </a-button>
-              </a-card>
-            </div>
-          </a-space>
-        </div>
-      </a-card>
+      <ProfileCard
+        :user="user"
+        class="profile-card-wrapper"
+      />
       <div class="title">
         已购游戏
       </div>
@@ -114,9 +44,9 @@ import { UserStore } from '@/store/modules/UserStoreModule'
 import { GameProfile } from '@/typings/GameProfile'
 import { games } from '@/api/Order'
 import { EMPTY_USER } from '@/typings/User'
-import { uploadAvatar, updateDescription } from '@/api/User'
+import ProfileCard from '@/components/ProfileCard.vue'
 
-@Component({ components: { GameCard } })
+@Component({ components: { ProfileCard, GameCard } })
 export default class PersonalProfile extends Vue {
   purchasedGames: Array<GameProfile> = []
 
@@ -129,23 +59,6 @@ export default class PersonalProfile extends Vue {
       this.purchasedGames = it
     })
     return dispUser
-  }
-
-  async uploadAvatar (file: File) {
-    await uploadAvatar(this.user.username, file)
-    this.$message.success('Upload success!')
-    await UserStore.update()
-  }
-
-  async updateDescription () {
-    await updateDescription(this.user.username, this.description)
-    this.$message.success('Update success!')
-    await UserStore.update()
-  }
-
-  startEdit () {
-    this.edit = true
-    this.description = this.user.description
   }
 }
 </script>
@@ -175,54 +88,13 @@ export default class PersonalProfile extends Vue {
     color: $primary-text;
   }
 
-  .avatar-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .upload-avatar-button {
-    display: inline-block;
-    margin-top: 0.75em;
-    color: $primary-color;
-    cursor: pointer;
-  }
-
-  .edit-button {
-    color: $primary-color;
-    cursor: pointer;
-  }
-
-  .user-card {
-    width: 450px;
-    color: $primary-text;
-    background-color: inherit;
-    border-color: #6a6a6a;
-    border-radius: 10px;
-  }
-
-  .user-description {
-    width: 280px;
-    background-color: inherit;
-    border-color: #6a6a6a;
-    color: inherit;
-  }
-
-  .username {
-    font-size: 2.25em;
-  }
-
-  .email {
-    color: #40a9ff;
-  }
-
-  .user-profile-entry {
-    padding-bottom: 5px;
-  }
-
   .game-card-wrapper {
     box-sizing: border-box;
     margin-right: 1.2em;
+  }
+
+  .profile-card-wrapper {
+    margin: 50px auto;
   }
 
   @media (max-width: 768px) {
