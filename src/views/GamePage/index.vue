@@ -22,15 +22,45 @@
             {{ game.introduction }}
           </div>
           <div class="purchase-box">
-            <div class="purchase-price">
+            <div
+              v-if="game.discount === null"
+              class="purchase-price"
+            >
               ${{ game.price }}
             </div>
+            <div v-else>
+              <div class="purchase-box">
+                <a-space size="middle">
+                  <div class="purchase-price">
+                    <s>
+                      ${{ game.price }}
+                    </s>
+                  </div>
+                  <div class="new-price">
+                    ${{ Math.round( game.price * game.discount.percentage * 100 + Number.EPSILON ) / 100 }}
+                  </div>
+                </a-space>
+              </div>
+              <a-statistic-countdown
+                title="距离优惠结束还有"
+                format="D 天 H 时 m 分 s 秒"
+                :value="deadline"
+              />
+            </div>
             <a-button
+              v-if="!purchased"
               type="primary"
               class="purchase-button"
               @click="$router.push(`/game/${gameId}/purchase`)"
             >
               立即购买
+            </a-button>
+            <a-button
+              v-else
+              class="purchase-button"
+              disabled
+            >
+              已购买
             </a-button>
           </div>
         </div>
@@ -118,6 +148,9 @@
           评论
         </div>
         <div class="game-comment-body game-content-body">
+          <div class="game-comment-average">
+            平均评分: {{ averageScore }}
+          </div>
           <div class="game-comment-control">
             <a
               class="game-comment-control-link"
@@ -175,19 +208,22 @@ import { gameDetail } from '@/api/Game'
 import { CommentCard, ImageGallery } from '@/views/GamePage/components'
 import { EMPTY_GAME } from '@/typings/GameProfile'
 import VueMarkdown from 'vue-markdown'
-import { Comment, EMPTY_COMMENT } from '@/typings/Comment'
-import { createComment, gameComments, updateComment } from '@/api/Comment'
+import { Comment, CommentThumb, CommentWithThumb, EMPTY_COMMENT, ThumbSummary } from '@/typings/Comment'
+import { createComment, gameComments, gameCommentThumbs, updateComment } from '@/api/Comment'
 import { UserStore } from '@/store/modules/UserStoreModule'
 import { Watch } from 'vue-property-decorator'
 import { Announcement } from '@/typings/Announcement'
 import { gameAnnouncements } from '@/api/Announcement'
 import PageNavigation from '@/components/PageNavigation/index.vue'
+import { games } from '@/api/Order'
 
 @Component({ components: { PageNavigation, ImageGallery, CommentCard, VueMarkdown } })
 export default class GamePage extends Vue {
   game: GameDetail = EMPTY_GAME_DETAIL
 
   comments: Array<Comment> = []
+  commentThumbs: Array<CommentThumb> = []
+  thumbSummary: Array<ThumbSummary> = []
   announcements: Array<Announcement> = []
 
   showAllComment = false
@@ -198,6 +234,10 @@ export default class GamePage extends Vue {
   commentInput = ''
   commentScore = 0
 
+  purchased = false
+
+  deadline: Date | null = null
+
   mounted () {
     const gameId = this.gameId
     if (gameId === undefined) {
@@ -207,6 +247,13 @@ export default class GamePage extends Vue {
     gameDetail(gameId)
       .then(it => {
         this.game = it
+        this.deadline = this.game.discount?.endTime || null
+        if (UserStore.user !== null) {
+          games(UserStore.user.username).then(games => {
+            this.purchased = games.map(game => game.gameId)
+              .includes(gameId)
+          })
+        }
       })
       .catch(() => {
         this.$message.error('Game not exist!')
@@ -224,11 +271,34 @@ export default class GamePage extends Vue {
     return this.game.images.find(it => it.type === 'F')?.url || EMPTY_GAME.imageFullSize
   }
 
+  get commentWithThumb () {
+    const list: Array<CommentWithThumb> = this.comments.map(comment => {
+      const vote = this.commentThumbs.find(it => it.commenter === comment.username)?.vote || 0
+      const summary = this.thumbSummary.find(it => it.commenter === comment.username) || {
+        commenter: comment.username,
+        upvote: 0,
+        downvote: 0
+      }
+      return {
+        ...comment,
+        vote,
+        thumbSummary: summary
+      }
+    })
+    return list
+  }
+
   get filledComment () {
-    if (this.comments.length < 3) {
-      return [...this.comments, EMPTY_COMMENT]
+    const comments = this.commentWithThumb
+    return comments.length < 3 ? [...comments, { ...EMPTY_COMMENT, vote: 0 }] : comments
+  }
+
+  get averageScore () {
+    if (this.comments.length === 0) {
+      return '暂无评分'
     } else {
-      return this.comments
+      const sum = this.comments.map(it => it.score).reduce((a, b) => a + b)
+      return `${(sum / this.comments.length).toFixed(2)}`
     }
   }
 
@@ -269,6 +339,9 @@ export default class GamePage extends Vue {
       return
     }
     this.comments = await gameComments(gameId)
+    const thumbs = await gameCommentThumbs(gameId)
+    this.commentThumbs = thumbs.commentThumbs
+    this.thumbSummary = thumbs.thumbSummary
     await this.loadUserComment()
   }
 
@@ -350,6 +423,12 @@ export default class GamePage extends Vue {
 .purchase-price {
   font-size: 1.125em;
   margin-bottom: 1rem;
+}
+
+.new-price {
+  font-size: 1.5em;
+  color: aquamarine;
+  margin-top: -1rem;
 }
 
 .purchase-button {
@@ -499,6 +578,10 @@ export default class GamePage extends Vue {
   }
 }
 
+.game-comment-average {
+  font-size: 1.2em;
+}
+
 .game-comment-box {
   display: flex;
   flex-flow: row wrap;
@@ -565,6 +648,20 @@ export default class GamePage extends Vue {
 @media (max-width: 768px) {
   .game-post-comment-button {
     width: 100%;
+  }
+}
+
+.purchase-box /deep/ .ant-statistic {
+  .ant-statistic-title {
+    color: $primary-text;
+    font-size: 16px;
+    text-align: end;
+    margin-bottom: -5px;
+  }
+
+  .ant-statistic-content-value {
+    color: $primary-text;
+    font-size: 20px;
   }
 }
 

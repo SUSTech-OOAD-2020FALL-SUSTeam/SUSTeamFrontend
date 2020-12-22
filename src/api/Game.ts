@@ -36,3 +36,10 @@ export async function gameDetail (gameId: number): Promise<GameDetail> {
   const data: any = await request.get(`/game/${gameId}/detail`)
   return parseGameDetail(data.gameDetail)
 }
+
+export async function uploadGameImage (gameId: number, file: File, type = 'Other'): Promise<string> {
+  const form = new FormData()
+  form.append(type, file)
+  const data: any = await request.post(`/game/${gameId}/image`, form, { headers: { 'Content-Type': 'multipart/form-data' } })
+  return data.images[0] as string
+}

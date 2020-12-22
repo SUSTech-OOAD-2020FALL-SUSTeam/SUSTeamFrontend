@@ -3,8 +3,10 @@
 import request from '@/utils/Request'
 import { GameProfile, parseGameProfile } from '@/typings/GameProfile'
 
-export async function createOrder (gameId: number, price: number): Promise<void> {
-  return await request.post('/order', { gameId, price })
+export async function createOrder (gameId: number, price: number): Promise<boolean> {
+  const data: any = await request.post('/order', { gameId, price })
+  const status = data.status
+  return !(status === 'FAIL')
 }
 
 export async function games (username: string): Promise<Array<GameProfile>> {

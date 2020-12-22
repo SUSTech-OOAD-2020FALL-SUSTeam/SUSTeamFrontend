@@ -1,3 +1,5 @@
+import { Discount, parseDiscount } from '@/typings/Discount'
+
 export interface GameImage {
   gameId: number;
   url: string;
@@ -14,6 +16,7 @@ export interface GameDetail {
   description: string;
   images: Array<GameImage>;
   tags: Array<string>;
+  discount: Discount | null;
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseGameImage (object: any): GameImage {
@@ -36,7 +39,8 @@ export function parseGameDetail (object: any): GameDetail {
     description: object.description || '暂无介绍',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     images: (object.images as Array<any>).map(it => parseGameImage(it)),
-    tags: object.tags || []
+    tags: object.tags || [],
+    discount: parseDiscount(object.discount)
   }
 }
 
@@ -46,5 +50,6 @@ export const EMPTY_GAME_DETAIL = parseGameDetail({
   price: 0,
   publishDate: '2020-01-01T01:00:00.000Z',
   author: 'admin',
-  images: []
+  images: [],
+  discount: null
 })

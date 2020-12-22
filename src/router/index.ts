@@ -10,6 +10,13 @@ import Signup from '@/views/Signup/index.vue'
 import Library from '@/views/Library/index.vue'
 import AnnouncementPage from '@/views/AnnouncementPage/index.vue'
 import Purchase from '@/views/Purchase/index.vue'
+import DevPanel from '@/views_dev/DevPanel.vue'
+import DevHome from '@/views_dev/Home/index.vue'
+import DevNoFound from '@/views_dev/DevNoFound.vue'
+import DevGames from '@/views_dev/Games/index.vue'
+import DevGameEdit from '@/views_dev/GameEdit/index.vue'
+import PersonalProfile from '@/views/Personal/index.vue'
+import DevGameNew from '@/views_dev/GameNew/index.vue'
 
 Vue.use(VueRouter)
 
@@ -28,6 +35,38 @@ const routes: Array<RouteConfig> = [
     path: '/library',
     name: 'Library',
     component: Library
+  },
+  {
+    path: '/dev',
+    name: 'DevPanel',
+    component: DevPanel,
+    children: [
+      {
+        path: '/',
+        name: 'DevHome',
+        component: DevHome
+      },
+      {
+        path: '/dev/games',
+        name: 'DevGames',
+        component: DevGames
+      },
+      {
+        path: '/dev/game/:gameId',
+        name: 'DevGameEdit',
+        component: DevGameEdit
+      },
+      {
+        path: '/dev/games/create',
+        name: 'DevGameNew',
+        component: DevGameNew
+      },
+      {
+        path: '*',
+        name: 'DevNoFound',
+        component: DevNoFound
+      }
+    ]
   },
   {
     path: '',
@@ -57,6 +96,11 @@ const routes: Array<RouteConfig> = [
         path: '/game/:gameId/purchase',
         name: 'Purchase',
         component: Purchase
+      },
+      {
+        path: '/account/personal',
+        name: 'Personal Profile',
+        component: PersonalProfile
       },
       {
         path: '*',

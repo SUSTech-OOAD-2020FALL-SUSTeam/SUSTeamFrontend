@@ -24,3 +24,26 @@ export const EMPTY_COMMENT = parseComment({
   content: 'No comment',
   score: 0
 })
+
+export interface CommentThumb {
+  commenter: string;
+  gameId: number;
+  username: string;
+  vote: number;
+}
+
+export interface CommentWithThumb {
+  username: string;
+  gameId: number;
+  commentTime: Date;
+  content: string;
+  score: number;
+  vote?: number;
+  thumbSummary? : ThumbSummary;
+}
+
+export interface ThumbSummary {
+  commenter: string;
+  upvote: number;
+  downvote: number;
+}

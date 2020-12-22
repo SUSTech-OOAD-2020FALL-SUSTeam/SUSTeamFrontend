@@ -35,3 +35,12 @@ export function parseUserRole (object: any): UserRole {
     roles: object.roles
   }
 }
+
+export const EMPTY_USER: UserRole = parseUserRole({
+  username: 'NULL',
+  mail: 'NULL',
+  avatar: null,
+  description: 'NULL',
+  balance: 0,
+  roles: ''
+})
