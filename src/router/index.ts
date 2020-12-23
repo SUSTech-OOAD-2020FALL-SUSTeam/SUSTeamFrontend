@@ -18,6 +18,7 @@ import DevGames from '@/views_dev/Games/index.vue'
 import DevGameEdit from '@/views_dev/GameEdit/index.vue'
 import PersonalProfile from '@/views/Personal/index.vue'
 import DevGameNew from '@/views_dev/GameNew/index.vue'
+import FriendPage from '@/views/Friend/index.vue'
 
 Vue.use(VueRouter)
 
@@ -103,6 +104,11 @@ const routes: Array<RouteConfig> = [
         path: '/account/personal',
         name: 'Personal Profile',
         component: PersonalProfile
+      },
+      {
+        path: '/friend',
+        name: 'Friend',
+        component: FriendPage
       },
       {
         path: '/help',

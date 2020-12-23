@@ -9,6 +9,7 @@
       >
         <div>
           <a-upload
+            v-if="isMyself"
             :before-upload="uploadAvatar"
             :show-upload-list="false"
           >
@@ -22,21 +23,48 @@
               />
             </a-tooltip>
           </a-upload>
-          <div class="balance-entry">
+          <a-avatar
+            v-else
+            :size="96"
+            :src="user.avatar"
+            class="avatar-box"
+          />
+          <div
+            v-if="isMyself"
+            class="balance-entry"
+          >
             <a-space
               align="baseline"
             >
               <a-icon
                 type="money-collect"
               />
-              ${{ user.balance }}
+              ${{ balance }}
             </a-space>
+          </div>
+          <div
+            v-else-if="lastSeen !== null"
+            class="lastseen-entry"
+          >
+            <a-icon
+              type="clock-circle"
+            />
+            {{ lastSeen.toLocaleDateString() }}
           </div>
         </div>
         <div class="profile-entries">
-          <div class="username user-profile-entry">
-            {{ user.username }}
-          </div>
+          <a-row
+            type="flex"
+            justify="space-between"
+          >
+            <div class="username user-profile-entry">
+              {{ user.username }}
+            </div>
+            <a-badge
+              v-if="online"
+              status="success"
+            />
+          </a-row>
           <div class="email user-profile-entry">
             {{ user.mail }}
           </div>
@@ -47,6 +75,7 @@
           >
             <div>个人简介</div>
             <a
+              v-if="isMyself"
               class="edit-button"
               @click="startEdit"
             ><a-icon type="edit" /></a>
@@ -93,8 +122,17 @@ export default class ProfileCard extends Vue {
   @Prop({ default: EMPTY_USER })
   user!: User
 
+  @Prop({ default: 0 })
+  balance!: number
+
   @Prop({ default: false })
-  allowEdit!: boolean
+  isMyself!: boolean
+
+  @Prop({ default: null })
+  lastSeen!: Date | null
+
+  @Prop({ default: true })
+  online!: boolean
 
   edit = false
   description = ''
@@ -184,7 +222,7 @@ export default class ProfileCard extends Vue {
 
 .email {
   color: #40a9ff;
-  top: -1em;
+  top: -0.5em;
   position: relative;
 }
 
@@ -195,6 +233,13 @@ export default class ProfileCard extends Vue {
 .balance-entry {
   margin: auto;
   text-align: center;
+}
+
+.lastseen-entry {
+  margin: auto;
+  padding-top: 1em;
+  text-align: center;
+  color: #7b7b7b;
 }
 
 .description-head {
