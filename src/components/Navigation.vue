@@ -71,6 +71,14 @@
                   </router-link>
                 </a-menu-item>
                 <a-menu-item key="1">
+                  <router-link
+                    :to="`/friend`"
+                    class="user-link"
+                  >
+                    好友
+                  </router-link>
+                </a-menu-item>
+                <a-menu-item key="2">
                   <a
                     class="user-link"
                     @click="logout"
@@ -93,6 +101,12 @@
                 class="user-link"
               >
                 账户
+              </router-link>
+              <router-link
+                :to="`/friend`"
+                class="user-link"
+              >
+                好友
               </router-link>
               <a
                 class="user-link"

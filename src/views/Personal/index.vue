@@ -3,6 +3,8 @@
     <div class="page-container">
       <ProfileCard
         :user="user"
+        :is-myself="true"
+        :balance="balance"
         class="profile-card-wrapper"
       />
       <div class="title">
@@ -43,22 +45,23 @@ import GameCard from '@/components/GameCard.vue'
 import { UserStore } from '@/store/modules/UserStoreModule'
 import { GameProfile } from '@/typings/GameProfile'
 import { games } from '@/api/Order'
-import { EMPTY_USER } from '@/typings/User'
+import { EMPTY_USER_ROLE, userRoleToUser } from '@/typings/User'
 import ProfileCard from '@/components/ProfileCard.vue'
 
 @Component({ components: { ProfileCard, GameCard } })
 export default class PersonalProfile extends Vue {
   purchasedGames: Array<GameProfile> = []
-
+  balance = 0
   edit = false
   description = ''
 
   get user () {
-    const dispUser = UserStore.user || EMPTY_USER
+    const dispUser = UserStore.user || EMPTY_USER_ROLE
     games(dispUser.username).then(it => {
       this.purchasedGames = it
     })
-    return dispUser
+    this.balance = dispUser.balance
+    return userRoleToUser(dispUser)
   }
 }
 </script>

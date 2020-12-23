@@ -36,7 +36,7 @@ export function parseUserRole (object: any): UserRole {
   }
 }
 
-export const EMPTY_USER: UserRole = parseUserRole({
+export const EMPTY_USER_ROLE: UserRole = parseUserRole({
   username: 'NULL',
   mail: 'NULL',
   avatar: null,
@@ -44,3 +44,14 @@ export const EMPTY_USER: UserRole = parseUserRole({
   balance: 0,
   roles: ''
 })
+
+export function userRoleToUser (role: UserRole): User {
+  return {
+    username: role.username,
+    mail: role.mail,
+    avatar: role.avatar || '/default_avatar.jpg',
+    description: role.description || '暂无介绍'
+  }
+}
+
+export const EMPTY_USER: User = userRoleToUser(EMPTY_USER_ROLE)
