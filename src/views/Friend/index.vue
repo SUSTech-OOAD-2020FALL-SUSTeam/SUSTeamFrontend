@@ -1,7 +1,25 @@
 <template>
   <main class="game-page dark page-container">
     <div class="title">
-      我的好友
+      <a-row
+        type="flex"
+        justify="space-between"
+      >
+        我的好友
+        <a-popover
+          placement="bottom"
+        >
+          <template slot="content">
+            <Invitation />
+          </template>
+          <a-space>
+            <a-icon type="inbox" />
+            <div style="font-size: 0.5em">
+              好友申请
+            </div>
+          </a-space>
+        </a-popover>
+      </a-row>
     </div>
     <div>
       <a-row
@@ -30,12 +48,13 @@
 import { Component, Watch } from 'vue-property-decorator'
 import Vue from 'vue'
 import ProfileCard from '@/components/ProfileCard.vue'
+import Invitation from '@/views/Friend/component/Invitation.vue'
 import { friends, getUser } from '@/api/Friend'
 import { Friend } from '@/typings/Friend'
-import { EMPTY_USER, User, userRoleToUser } from '@/typings/User'
+import { EMPTY_USER, User } from '@/typings/User'
 
 @Component({
-  components: { ProfileCard }
+  components: { Invitation, ProfileCard }
 })
 export default class FriendPage extends Vue {
   friendList: Array<Friend> = []
