@@ -17,6 +17,7 @@
           <ProfileCard
             :user="friend"
             :last-seen="friendList[index].lastSeen"
+            :online="friendList[index].online"
           />
         </div>
       </a-row>
@@ -31,7 +32,7 @@ import Vue from 'vue'
 import ProfileCard from '@/components/ProfileCard.vue'
 import { friends, getUser } from '@/api/Friend'
 import { Friend } from '@/typings/Friend'
-import { User } from '@/typings/User'
+import { EMPTY_USER, User, userRoleToUser } from '@/typings/User'
 
 @Component({
   components: { ProfileCard }
@@ -42,15 +43,16 @@ export default class FriendPage extends Vue {
 
   async mounted () {
     this.friendList = await friends()
+    console.log(this.friendList)
   }
 
   @Watch('friendList')
   updateFriendUser () {
-    this.friendUser = []
-    for (const friend of this.friendList) {
+    const tempUser = Array(this.friendList.length).fill(EMPTY_USER)
+    for (const [index, friend] of this.friendList.entries()) {
       getUser(friend.username).then(user => {
-        this.friendUser.push(user)
-        console.log(this.friendUser)
+        tempUser[index] = user
+        this.friendUser = Array.from(tempUser)
       })
     }
   }

@@ -53,9 +53,18 @@
           </div>
         </div>
         <div class="profile-entries">
-          <div class="username user-profile-entry">
-            {{ user.username }}
-          </div>
+          <a-row
+            type="flex"
+            justify="space-between"
+          >
+            <div class="username user-profile-entry">
+              {{ user.username }}
+            </div>
+            <a-badge
+              v-if="online"
+              status="success"
+            />
+          </a-row>
           <div class="email user-profile-entry">
             {{ user.mail }}
           </div>
@@ -121,6 +130,9 @@ export default class ProfileCard extends Vue {
 
   @Prop({ default: null })
   lastSeen!: Date | null
+
+  @Prop({ default: true })
+  online!: boolean
 
   edit = false
   description = ''
