@@ -100,9 +100,25 @@
               >登出</a>
             </div>
           </template>
-          <a class="button primary">
-            获取客户端
-          </a>
+          <a-popover trigger="click">
+            <template
+              slot="content"
+            >
+              <a-space>
+                <a-button
+                  icon="windows"
+                  @click="downloadClientWindows"
+                />
+                <a-button
+                  icon="apple"
+                  @click="downloadClientMac"
+                />
+              </a-space>
+            </template>
+            <a class="button primary">
+              获取客户端
+            </a>
+          </a-popover>
         </div>
       </div>
       <div
@@ -161,6 +177,14 @@ export default class Navigation extends Vue {
     await UserStore.update()
     this.$message.success('Logout success!')
     await router.push('/')
+  }
+
+  downloadClientWindows () {
+    window.open('/susteam.exe', '_blank')
+  }
+
+  downloadClientMac () {
+    window.open('/susteam.dmg', '_blank')
   }
 }
 
