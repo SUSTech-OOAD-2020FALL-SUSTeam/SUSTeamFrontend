@@ -146,6 +146,7 @@ export async function launchGame (gameId: number, branch: string) {
     launchFile = `${gamePath}/launch.bat`
   } else {
     launchFile = `${gamePath}/launch.sh`
+    await fs.chmod(launchFile, '755')
   }
 
   if (!await fs.pathExists(launchFile)) {
