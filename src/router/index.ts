@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
-import Home from '../views/Home/index.vue'
-import Browse from '../views/Browse/index.vue'
+import Home from '@/views/Home/index.vue'
+import Help from '@/views/Help/index.vue'
+import Browse from '@/views/Browse/index.vue'
 import NotFound from '@/views/NotFound.vue'
 import GamePage from '@/views/GamePage/index.vue'
 import CommonPage from '@/views/CommonPage.vue'
@@ -101,6 +102,11 @@ const routes: Array<RouteConfig> = [
         path: '/account/personal',
         name: 'Personal Profile',
         component: PersonalProfile
+      },
+      {
+        path: '/help',
+        name: 'Help',
+        component: Help
       },
       {
         path: '*',

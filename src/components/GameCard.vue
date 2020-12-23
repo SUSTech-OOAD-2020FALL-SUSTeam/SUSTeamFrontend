@@ -29,7 +29,7 @@
         >
           <a-space :size="4">
             <a-tag color="#108ee9">
-              -{{ 100 * game.discount.percentage }}%
+              -{{ 100 - 100 * game.discount.percentage }}%
             </a-tag>
             <div class="old-price">
               <s>

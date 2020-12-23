@@ -84,7 +84,7 @@ export default class VersionEdit extends Vue {
     branch: 'Main',
     name: '',
     url: '',
-    updateUrl: '',
+    updateUrl: null,
     uploadTime: new Date()
   }
 
