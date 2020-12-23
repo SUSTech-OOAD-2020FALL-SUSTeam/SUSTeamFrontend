@@ -6,19 +6,54 @@
         justify="space-between"
       >
         我的好友
-        <a-popover
-          placement="bottom"
-        >
-          <template slot="content">
-            <Invitation />
-          </template>
+        <div>
           <a-space>
-            <a-icon type="inbox" />
-            <div style="font-size: 0.5em">
-              好友申请
-            </div>
+            <a-popover
+              placement="bottom"
+            >
+              <template slot="content">
+                <div
+                  v-for="user in invitationUserList"
+                  :key="user"
+                  style="padding-bottom: 1em;"
+                >
+                  <Invitation :user="user" />
+                </div>
+              </template>
+              <a-space>
+                <a-icon type="inbox" />
+                <div style="font-size: 0.5em">
+                  申请列表
+                </div>
+              </a-space>
+            </a-popover>
+            <a-divider type="vertical" />
+            <a-popover
+              placement="bottom"
+            >
+              <template slot="content">
+                <a-space>
+                  <a-input
+                    v-model="inviteTarget"
+                    placeholder="用户名"
+                  />
+                  <a-button
+                    type="link"
+                    @click="doAddFriend"
+                  >
+                    添加
+                  </a-button>
+                </a-space>
+              </template>
+              <a-space>
+                <a-icon type="plus" />
+                <div style="font-size: 0.5em">
+                  添加好友
+                </div>
+              </a-space>
+            </a-popover>
           </a-space>
-        </a-popover>
+        </div>
       </a-row>
     </div>
     <div>
@@ -48,21 +83,41 @@
 import { Component, Watch } from 'vue-property-decorator'
 import Vue from 'vue'
 import ProfileCard from '@/components/ProfileCard.vue'
-import Invitation from '@/views/Friend/component/Invitation.vue'
-import { friends, getUser } from '@/api/Friend'
+import FriendReply from '@/views/Friend/component/Invitation.vue'
+import { addFriend, friends, getInvitations, getUser } from '@/api/Friend'
 import { Friend } from '@/typings/Friend'
 import { EMPTY_USER, User } from '@/typings/User'
 
 @Component({
-  components: { Invitation, ProfileCard }
+  components: { Invitation: FriendReply, ProfileCard }
 })
 export default class FriendPage extends Vue {
   friendList: Array<Friend> = []
   friendUser: Array<User> = []
+  invitationUserList: Array<User> = []
+  inviteTarget = ''
 
   async mounted () {
     this.friendList = await friends()
-    console.log(this.friendList)
+    await this.updateInvitationList()
+  }
+
+  async updateInvitationList () {
+    const invitationList = await getInvitations()
+    const tempUserList = Array(invitationList.length).fill(EMPTY_USER)
+    for (const [index, invitation] of invitationList.entries()) {
+      getUser(invitation.from).then(user => {
+        tempUserList[index] = user
+        this.invitationUserList = Array.from(tempUserList)
+      })
+    }
+  }
+
+  doAddFriend () {
+    addFriend(this.inviteTarget).then(() => {
+      this.$message.success('好友请求已发送')
+      this.inviteTarget = ''
+    })
   }
 
   @Watch('friendList')

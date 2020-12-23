@@ -61,6 +61,7 @@ export default class PersonalProfile extends Vue {
       this.purchasedGames = it
     })
     this.balance = dispUser.balance
+    console.log(dispUser)
     return userRoleToUser(dispUser)
   }
 }
